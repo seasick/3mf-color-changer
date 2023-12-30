@@ -1,0 +1,19 @@
+[
+  {
+    "path": "examples/3MFConsortium-samples/cube_gears.3mf",
+    "label": "Cube Gears"
+  },
+  {
+    "path": "examples/3MFConsortium-samples/dodeca_chain_loop.3mf",
+    "label": "Dodeca Chain Loop"
+  },
+  {
+    "path": "examples/3MFConsortium-samples/heartgears.3mf",
+    "label": "Heart Gears"
+  },
+  {
+    "path": "examples/3MFConsortium-samples/rhombicuboctahedron_color.3mf",
+    "label": "Colored Rhombicuboctahedron",
+    "description": "Changing this model's color will lose the color on the vertices."
+  }
+]

@@ -18,33 +18,31 @@ type Props = JSX.IntrinsicElements['group'] & {
 
 export default function ThreeJsCanvas({ geometry, onSelect }: Props) {
   return (
-    <div style={{ height: '80vh' }}>
-      <Canvas
-        shadows
-        camera={{
-          fov: 35,
-          zoom: 1.3,
-          near: 0.1,
-          far: 1000,
-          position: [6, 6, 6],
-        }}
-      >
-        <ContactShadows frames={1} />
-        <CameraControls />
-        <Environment />
-        <Center>
-          <Model
-            geometry={geometry}
-            onClick={(e) => {
-              onSelect(e);
-              e.stopPropagation();
-            }}
-          />
-        </Center>
-        <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-          <GizmoViewcube />
-        </GizmoHelper>
-      </Canvas>
-    </div>
+    <Canvas
+      shadows
+      camera={{
+        fov: 35,
+        zoom: 1.3,
+        near: 0.1,
+        far: 1000,
+        position: [6, 6, 6],
+      }}
+    >
+      <ContactShadows frames={1} />
+      <CameraControls />
+      <Environment />
+      <Center>
+        <Model
+          geometry={geometry}
+          onClick={(e) => {
+            onSelect(e);
+            e.stopPropagation();
+          }}
+        />
+      </Center>
+      <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
+        <GizmoViewcube />
+      </GizmoHelper>
+    </Canvas>
   );
 }

@@ -11,6 +11,7 @@ import * as React from 'react';
 import config from '../etc/config.json';
 
 const drawerWidth = 340;
+const toolbarHeight = 64; // TODO Will this work everywhere?
 
 type Props = {
   menu?: React.ReactNode;
@@ -51,9 +52,17 @@ export default function PermanentDrawer({ menu, title, children }: Props) {
           <Box sx={{ overflow: 'auto' }}>{menu}</Box>
         </Drawer>
       )}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, pt: 0 }}>
         <Toolbar />
-        {children}
+        <Box
+          sx={{
+            width: `calc(100vw - ${menu ? drawerWidth : 0}px)`,
+            height: `calc(100vh - ${toolbarHeight}px)`,
+            overflow: 'auto',
+          }}
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

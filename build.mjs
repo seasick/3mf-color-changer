@@ -21,7 +21,12 @@ const options = {
       // if not specified, this plugin uses ESBuild.build outdir/outfile options as base path.
       resolveFrom: 'cwd',
       assets: {
-        from: ['./public/**/*.3mf'],
+        from: [
+          './public/**/*.3mf',
+          './public/*.png',
+          './public/*.ico',
+          './public/*.webmanifest',
+        ],
         to: ['./dist'],
       },
       watch: true,

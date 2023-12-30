@@ -12,7 +12,6 @@ import ThreeJsCanvas from './components/threeJs/Canvas';
 import useFile from './components/threeJs/useFile';
 import config from './etc/config.json';
 import { ChangedColors, changeColors } from './utils/3mf/changeColors';
-import { hexToRgb } from './utils/color';
 import createFileFromHttp from './utils/createFileFromHttp';
 import { getFaceCount } from './utils/geometry';
 
@@ -70,12 +69,14 @@ export default function App() {
       const mesh = child as THREE.Mesh;
       const facesCount = getFaceCount(mesh);
       const filledArray: number[] = [];
-      const rgb = hexToRgb(color);
+      const threeColor = new THREE.Color(color);
+
+      threeColor.convertSRGBToLinear();
 
       for (let i = 0; i < facesCount; ++i) {
-        filledArray.push(rgb[0] / 255);
-        filledArray.push(rgb[1] / 255);
-        filledArray.push(rgb[2] / 255);
+        filledArray.push(threeColor.r);
+        filledArray.push(threeColor.g);
+        filledArray.push(threeColor.b);
       }
 
       const attribute = new THREE.BufferAttribute(

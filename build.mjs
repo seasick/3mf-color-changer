@@ -1,5 +1,6 @@
 import * as esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
+import { replace } from 'esbuild-plugin-replace';
 
 const options = {
   entryPoints: ['src/index.tsx', 'src/index.html'],
@@ -30,6 +31,9 @@ const options = {
         to: ['./dist'],
       },
       watch: true,
+    }),
+    replace({
+      __MATOMO_TRACKING_HOST: process.env.MATOMO_TRACKING_HOST || 'localhost',
     }),
   ],
 };

@@ -7,13 +7,15 @@ import * as THREE from 'three';
 
 import Home from './components/Home';
 import MeshList from './components/MeshList';
+import ModeSelector from './components/ModeSelector';
 import PermanentDrawer from './components/PermanentDrawer';
 import ThreeJsCanvas from './components/threeJs/Canvas';
 import useFile from './components/threeJs/useFile';
 import config from './etc/config.json';
 import { ChangedColors, changeColors } from './utils/3mf/changeColors';
 import createFileFromHttp from './utils/createFileFromHttp';
-import { getFaceCount } from './utils/geometry';
+import changeMeshColor from './utils/threejs/changeMeshColor';
+import changeVertexColor from './utils/threejs/changeVertexColor';
 
 export default function App() {
   const title = config.title;
@@ -21,6 +23,8 @@ export default function App() {
   const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
   const [colors, setColors] = React.useState<ChangedColors>({});
+  const [mode, setMode] = React.useState<'mesh' | 'vertex'>('mesh');
+  const [workingColor, setWorkingColor] = React.useState<string>('#f00');
 
   const handleFileChange = async (e: string | File) => {
     if (typeof e === 'string') {
@@ -41,6 +45,12 @@ export default function App() {
   }
 
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
+    if (mode === 'mesh') {
+      handleMeshColorChange(e.object.uuid, workingColor);
+    } else if (mode === 'vertex') {
+      handleVertexColorChange(e, workingColor);
+    }
+
     setSelected(e.object);
   };
 
@@ -59,46 +69,60 @@ export default function App() {
     link.click();
   };
 
-  const handleColorChange = (uuid, color) => {
+  const handleMeshColorChange = (uuid, color: string) => {
+    // TODO: Debounce - no need to re-render the mesh for every color change (e.g. when dragging the color picker)
     object?.traverse((child) => {
       if (child.uuid !== uuid) {
         return;
       }
-      setColors({ ...colors, [child.name]: color });
-
-      const mesh = child as THREE.Mesh;
-      const facesCount = getFaceCount(mesh);
-      const filledArray: number[] = [];
-      const threeColor = new THREE.Color(color);
-
-      threeColor.convertSRGBToLinear();
-
-      for (let i = 0; i < facesCount; ++i) {
-        filledArray.push(threeColor.r);
-        filledArray.push(threeColor.g);
-        filledArray.push(threeColor.b);
-      }
-
-      const attribute = new THREE.BufferAttribute(
-        new Float32Array(filledArray),
-        3
-      );
-      attribute.needsUpdate = true;
-
-      // Fill the color buffer with the new color
-      mesh.geometry.setAttribute('color', attribute);
-
-      mesh.material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        specular: 0xffffff,
-        shininess: 50,
-        vertexColors: true,
+      setColors({
+        ...colors,
+        [child.name]: {
+          ...colors[child.name],
+          mesh: color,
+        },
       });
 
-      // TODO: Without this, the color would be flat, without any distinction between shades.
-      // But with it, the normals are wrong.
-      mesh.geometry.computeVertexNormals();
+      changeMeshColor(child as THREE.Mesh, color);
     });
+  };
+
+  const handleVertexColorChange = (e: ThreeEvent<MouseEvent>, color) => {
+    const mesh = e.object as THREE.Mesh;
+
+    if (e.face) {
+      const existingVertices = [...(colors[mesh.name]?.vertex || [])];
+      const existingVertex = existingVertices.findIndex(
+        (f) => f.face === e.faceIndex
+      );
+
+      if (existingVertex > -1) {
+        existingVertices.splice(existingVertex, 1);
+      } else {
+        existingVertices.push({
+          face: e.faceIndex!,
+          color,
+        });
+      }
+
+      changeVertexColor(mesh, color, e.face);
+
+      setColors({
+        ...colors,
+        [mesh.name]: {
+          ...colors[mesh.name],
+          vertex: existingVertices,
+        },
+      });
+    }
+  };
+
+  const handleWorkingColorChange = (color) => {
+    setWorkingColor(color);
+  };
+
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
   };
 
   const getMenu = () => {
@@ -116,7 +140,7 @@ export default function App() {
           <MeshList
             geometry={object}
             selected={selected?.uuid}
-            onChange={handleColorChange}
+            onChange={handleMeshColorChange}
           />
         </Box>
       );
@@ -126,7 +150,23 @@ export default function App() {
 
   return (
     <PermanentDrawer title={title} menu={getMenu()}>
-      {object && <ThreeJsCanvas geometry={object} onSelect={handleSelect} />}
+      <Box sx={{ position: 'relative', height: '100%' }}>
+        <ModeSelector
+          color={workingColor}
+          onModeChange={handleModeChange}
+          onColorChange={handleWorkingColorChange}
+          onExport={handleExport}
+          mode={mode}
+          sx={{
+            position: 'absolute',
+            top: 5,
+            left: 5,
+            backgroundColor: 'white',
+            zIndex: 1,
+          }}
+        />
+        {object && <ThreeJsCanvas geometry={object} onSelect={handleSelect} />}
+      </Box>
     </PermanentDrawer>
   );
 }

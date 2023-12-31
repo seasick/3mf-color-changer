@@ -10,8 +10,16 @@ import {
 import { addColorGroup } from './addColorGroup';
 
 type Color = string;
+type FaceIndex = number;
+type ChangedColor = {
+  mesh: Color;
+  vertex: {
+    face: FaceIndex;
+    color: Color;
+  }[];
+};
 export type ChangedColors = {
-  [objectName: string]: Color;
+  [objectName: string]: ChangedColor;
 };
 
 /* Applies the color changes to a given 3MF file and returns the content blob of the new file */
@@ -53,17 +61,30 @@ export async function changeColors(
           const obj = xmlDoc.querySelector(`object[name="${key}"]`);
 
           if (obj) {
-            const colorGroup = addColorGroup(xmlDoc, [colors[key]]);
-            obj.setAttribute('pid', colorGroup);
-            obj.setAttribute('pindex', '0');
+            // Accumulate all unique colors
+            const colorSet = getUniqueColors(colors[key]);
 
-            // If vertices already have a color, it has to be removed from the file.
-            // Otherwise, the color on the object wouldn't change.
-            const vertices = obj.querySelectorAll('triangle');
-            vertices.forEach((vertex) => {
-              vertex.removeAttribute('pid');
-              vertex.removeAttribute('p1');
-            });
+            // Add the colors as a group
+            const colorGroup = addColorGroup(xmlDoc, colorSet);
+
+            // Fetch all triangles to later set their color
+            const triangles = obj.getElementsByTagName('triangle');
+
+            if (colors[key].mesh) {
+              obj.setAttribute('pid', colorGroup);
+              obj.setAttribute('pindex', '0');
+            }
+
+            // TODO Check if the colors of all triangles are the same. If so, we can set the color
+            //  on the object instead of the individual triangles.
+
+            for (let vertex of colors[key].vertex) {
+              triangles[vertex.face].setAttribute('pid', colorGroup);
+              triangles[vertex.face].setAttribute(
+                'p1',
+                colorSet.findIndex((color) => color === vertex.color).toString()
+              );
+            }
           }
         });
 
@@ -86,4 +107,18 @@ export async function changeColors(
 
   // Get the data blob and return it
   return zipFileWriter.getData();
+}
+
+function getUniqueColors(colors: ChangedColor): string[] {
+  const colorSet = new Set<string>();
+
+  // Add the mesh color
+  colorSet.add(colors.mesh);
+
+  // Add all vertex colors
+  colors.vertex.forEach((vertex) => {
+    colorSet.add(vertex.color);
+  });
+
+  return [...colorSet];
 }

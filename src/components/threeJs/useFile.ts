@@ -28,11 +28,14 @@ export default function useFile(
           // can assume that the model has vertex colors.
           const geometry = child.geometry as THREE.BufferGeometry;
           const attributes = geometry.attributes;
-          if (attributes.color) {
-            child.material = new THREE.MeshBasicMaterial({
-              vertexColors: true,
-            });
-          }
+
+          child.material = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            specular: 0xffffff,
+            shininess: 50,
+            vertexColors: !!attributes.color,
+            flatShading: true,
+          });
         }
       });
 

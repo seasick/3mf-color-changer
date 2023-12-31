@@ -1,10 +1,11 @@
+import PaletteIcon from '@mui/icons-material/Palette';
+import { Box, IconButton, Popover } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { MuiColorInput } from 'mui-color-input';
+import ListItemText from '@mui/material/ListItemText';
 import React, { useMemo } from 'react';
+import { HexColorPicker } from 'react-colorful';
 import * as THREE from 'three';
-
-import { getColorFromMesh } from '../utils/color';
 
 type Props = {
   geometry: THREE.Object3D;
@@ -15,6 +16,12 @@ type Props = {
 
 export default function MeshList({ geometry, onChange, selected, sx }: Props) {
   const [open, setOpen] = React.useState({});
+  const [showColorPicker, setShowColorPicker] = React.useState<
+    Record<string, boolean>
+  >({});
+  const [colorPickerAnchorEl, setColorPickerAnchorEl] =
+    React.useState<HTMLButtonElement>();
+
   const handleClick = (uuid) => (e) => {
     setOpen({
       ...open,
@@ -35,7 +42,33 @@ export default function MeshList({ geometry, onChange, selected, sx }: Props) {
   return (
     <List sx={sx}>
       {children.map((child) => {
-        const currentColor = getColorFromMesh(child);
+        const mesh = child as THREE.Mesh;
+        const colors = mesh.geometry.getAttribute('color');
+        const handleColorChange = (newColor) => onChange(child.uuid, newColor);
+
+        const threeColor = new THREE.Color(
+          colors && colors.getX(0),
+          colors && colors.getY(0),
+          colors && colors.getZ(0)
+        );
+        const hexColor = `#${threeColor.getHexString()}`;
+
+        const handleShowColorPicker = (e) => {
+          setColorPickerAnchorEl(e.currentTarget);
+          setShowColorPicker({
+            ...showColorPicker,
+            [child.uuid]: true,
+          });
+        };
+
+        const handleColorPickerClose = () => {
+          setColorPickerAnchorEl(undefined);
+          setShowColorPicker({
+            ...showColorPicker,
+            [child.uuid]: false,
+          });
+        };
+
         let label = 'Unknown';
 
         if (child.name) {
@@ -48,17 +81,46 @@ export default function MeshList({ geometry, onChange, selected, sx }: Props) {
 
         return (
           <ListItem
+            dense
             key={child.uuid}
             selected={selected === child.uuid}
             onClick={handleClick(child.uuid)}
           >
-            <MuiColorInput
-              isAlphaHidden={true}
-              label={label}
-              value={currentColor || '#ffffff'}
-              format="hex"
-              onChange={(_color, colors) => onChange(child.uuid, colors.hex)}
-            />
+            <ListItemText primary={label} />
+            <IconButton
+              onClick={handleShowColorPicker}
+              sx={{
+                backgroundColor: hexColor,
+                color: (theme) => theme.palette.getContrastText(hexColor),
+              }}
+            >
+              <PaletteIcon />
+            </IconButton>
+            <Popover
+              open={showColorPicker[child.uuid] || false}
+              anchorEl={colorPickerAnchorEl}
+              onClose={handleColorPickerClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              slotProps={{
+                paper: {
+                  style: {
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                  },
+                },
+              }}
+            >
+              <Box sx={{ m: 2 }}>
+                <HexColorPicker color={hexColor} onChange={handleColorChange} />
+              </Box>
+            </Popover>
           </ListItem>
         );
       })}

@@ -25,6 +25,7 @@ export default function App() {
   const [colors, setColors] = React.useState<ChangedColors>({});
   const [mode, setMode] = React.useState<'mesh' | 'vertex'>('mesh');
   const [workingColor, setWorkingColor] = React.useState<string>('#f00');
+  const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
 
   const handleFileChange = async (e: string | File) => {
     if (typeof e === 'string') {
@@ -125,18 +126,14 @@ export default function App() {
     setMode(newMode);
   };
 
+  const handleShowMeshList = (showMeshList) => {
+    setShowMeshList(showMeshList);
+  };
+
   const getMenu = () => {
     if (object) {
       return (
         <Box sx={{ p: 1 }}>
-          <ButtonGroup fullWidth>
-            <Button onClick={handleReset} variant="contained">
-              Back
-            </Button>
-            <Button onClick={handleExport} variant="contained">
-              Export
-            </Button>
-          </ButtonGroup>
           <MeshList
             geometry={object}
             selected={selected?.uuid}
@@ -149,14 +146,16 @@ export default function App() {
   };
 
   return (
-    <PermanentDrawer title={title} menu={getMenu()}>
+    <PermanentDrawer title={title} menu={showMeshList ? getMenu() : null}>
       <Box sx={{ position: 'relative', height: '100%' }}>
         <ModeSelector
           color={workingColor}
-          onModeChange={handleModeChange}
+          mode={mode}
           onColorChange={handleWorkingColorChange}
           onExport={handleExport}
-          mode={mode}
+          onModeChange={handleModeChange}
+          onShowMeshList={handleShowMeshList}
+          showMeshList={showMeshList}
           sx={{
             position: 'absolute',
             top: 5,

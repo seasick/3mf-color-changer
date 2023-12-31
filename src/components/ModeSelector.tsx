@@ -1,5 +1,8 @@
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CreateIcon from '@mui/icons-material/Create';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import PaletteIcon from '@mui/icons-material/Palette';
 import {
@@ -16,20 +19,24 @@ import { HexColorPicker } from 'react-colorful';
 type Mode = 'mesh' | 'vertex';
 type Props = {
   color: string;
-  onColorChange: (color: string) => void;
-  onModeChange: (mode: Mode) => void;
-  onExport: () => void;
   mode: Mode;
+  onColorChange: (color: string) => void;
+  onExport: () => void;
+  onModeChange: (mode: Mode) => void;
+  onShowMeshList: (showMeshList: boolean) => void;
+  showMeshList: boolean;
   sx?: any;
 };
 
 export default function ModeSelector({
   color,
-  onColorChange,
-  onModeChange,
-  onExport,
-  sx,
   mode,
+  onColorChange,
+  onExport,
+  onModeChange,
+  onShowMeshList,
+  showMeshList,
+  sx,
 }: Props) {
   const [showColorPicker, setShowColorPicker] = React.useState(false);
   const [colorPickerAnchorEl, setColorPickerAnchorEl] =
@@ -38,6 +45,10 @@ export default function ModeSelector({
   const handleModeClick = (newMode: Mode) => () => onModeChange(newMode);
   const handleColorChange = (newColor) => onColorChange(newColor);
   const handleExportClick = onExport;
+  const handleResetClick = () => {
+    // TODO Navigate back to start
+  };
+  const handleMeshListClick = () => onShowMeshList(!showMeshList);
 
   const style = {
     border: 1,
@@ -77,57 +88,36 @@ export default function ModeSelector({
       </Tooltip>
 
       <Tooltip title="Select the painting color" placement="right">
-        <>
-          <IconButton
-            sx={{
-              ...style,
-            }}
-            onClick={(event) => {
-              setColorPickerAnchorEl(event?.currentTarget);
-              setShowColorPicker(!showColorPicker);
-            }}
-          >
-            <Badge
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              badgeContent=" "
-              sx={{
-                '& .MuiBadge-badge': {
-                  backgroundColor: color,
-                },
-              }}
-            >
-              <PaletteIcon />
-            </Badge>
-          </IconButton>
-          <Popover
-            open={showColorPicker}
-            anchorEl={colorPickerAnchorEl}
-            onClose={() => setShowColorPicker(false)}
+        <IconButton
+          sx={{
+            ...style,
+          }}
+          onClick={(event) => {
+            setColorPickerAnchorEl(event?.currentTarget);
+            setShowColorPicker(!showColorPicker);
+          }}
+        >
+          <Badge
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
             }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            slotProps={{
-              paper: {
-                style: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                },
+            badgeContent=" "
+            sx={{
+              '& .MuiBadge-badge': {
+                backgroundColor: color,
               },
             }}
           >
-            <Box sx={{ m: 2 }}>
-              <HexColorPicker color={color} onChange={handleColorChange} />
-            </Box>
-          </Popover>
-        </>
+            <PaletteIcon />
+          </Badge>
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title="Use a new model" placement="right">
+        <IconButton onClick={handleResetClick} sx={{ ...style, mt: 5 }}>
+          <FiberNewIcon />
+        </IconButton>
       </Tooltip>
 
       <Tooltip title="Export your changes in a 3MF file" placement="right">
@@ -135,6 +125,38 @@ export default function ModeSelector({
           <FileDownloadIcon />
         </IconButton>
       </Tooltip>
+
+      <Tooltip title="Show mesh list" placement="right">
+        <IconButton onClick={handleMeshListClick} sx={style}>
+          {showMeshList ? <ChevronLeftIcon /> : <FormatListBulletedIcon />}
+        </IconButton>
+      </Tooltip>
+
+      <Popover
+        open={showColorPicker}
+        anchorEl={colorPickerAnchorEl}
+        onClose={() => setShowColorPicker(false)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        slotProps={{
+          paper: {
+            style: {
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+            },
+          },
+        }}
+      >
+        <Box sx={{ m: 2 }}>
+          <HexColorPicker color={color} onChange={handleColorChange} />
+        </Box>
+      </Popover>
     </ButtonGroup>
   );
 }

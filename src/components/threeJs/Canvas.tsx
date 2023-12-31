@@ -35,26 +35,25 @@ export default function ThreeJsCanvas({
         position: [6, 6, 6],
       }}
     >
-      <ContactShadows frames={1} />
+      {/* 3 frames, because the model is centered in the second frame, the third frame is just for safe measure */}
+      <ContactShadows frames={3} />
       <CameraControls />
       <Environment />
-      <Center>
-        <Model
-          geometry={geometry}
-          onClick={(e) => {
-            onSelect(e);
-            e.stopPropagation();
-          }}
-          onPointerOver={(e) => {
-            onPointerOverModel(e);
-            e.stopPropagation();
-          }}
-          onPointerOut={(e) => {
-            onPointerOutModel(e);
-            e.stopPropagation();
-          }}
-        />
-      </Center>
+      <Model
+        geometry={geometry}
+        onClick={(e) => {
+          onSelect(e);
+          e.stopPropagation();
+        }}
+        onPointerOver={(e) => {
+          onPointerOverModel(e);
+          e.stopPropagation();
+        }}
+        onPointerOut={(e) => {
+          onPointerOutModel(e);
+          e.stopPropagation();
+        }}
+      />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewcube />
       </GizmoHelper>

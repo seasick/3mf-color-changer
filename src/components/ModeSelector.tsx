@@ -29,6 +29,17 @@ type Props = {
   sx?: any;
 };
 
+const defaultColors = [
+  '#d53e4f',
+  '#f46d43',
+  '#fdae61',
+  '#fee08b',
+  '#e6f598',
+  '#abdda4',
+  '#66c2a5',
+  '#3288bd',
+];
+
 export default function ModeSelector({
   color,
   mode,
@@ -125,6 +136,16 @@ export default function ModeSelector({
           {showMeshList ? <ChevronLeftIcon /> : <FormatListBulletedIcon />}
         </IconButton>
       </Tooltip>
+
+      <Box sx={{ mt: 5 }} />
+      {defaultColors.map((d) => (
+        <Tooltip title="Set color" placement="right" key={d}>
+          <IconButton
+            onClick={() => handleColorChange(d)}
+            sx={{ ...style, backgroundColor: d + ' !important', height: 40 }}
+          ></IconButton>
+        </Tooltip>
+      ))}
 
       <Popover
         open={showColorPicker}

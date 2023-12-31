@@ -28,10 +28,8 @@ export default function changeVertexColor(
 
     // TODO It would be better to change the material here,
     // instead of creating a new one. Couldn't figure that out yet.
-    mesh.material = new THREE.MeshPhongMaterial({
+    mesh.material = new THREE.MeshLambertMaterial({
       color: 0xffffff,
-      specular: 0xffffff,
-      shininess: 50,
       vertexColors: true,
       flatShading: true,
     });

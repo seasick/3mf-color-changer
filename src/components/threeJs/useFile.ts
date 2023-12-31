@@ -29,10 +29,8 @@ export default function useFile(
           const geometry = child.geometry as THREE.BufferGeometry;
           const attributes = geometry.attributes;
 
-          child.material = new THREE.MeshPhongMaterial({
+          child.material = new THREE.MeshLambertMaterial({
             color: 0xffffff,
-            specular: 0xffffff,
-            shininess: 50,
             vertexColors: !!attributes.color,
             flatShading: true,
           });

@@ -14,9 +14,16 @@ import Model from './Model';
 type Props = JSX.IntrinsicElements['group'] & {
   geometry: any;
   onSelect: (e) => void;
+  onPointerOverModel: (e) => void;
+  onPointerOutModel: (e) => void;
 };
 
-export default function ThreeJsCanvas({ geometry, onSelect }: Props) {
+export default function ThreeJsCanvas({
+  geometry,
+  onSelect,
+  onPointerOverModel,
+  onPointerOutModel,
+}: Props) {
   return (
     <Canvas
       shadows
@@ -36,6 +43,14 @@ export default function ThreeJsCanvas({ geometry, onSelect }: Props) {
           geometry={geometry}
           onClick={(e) => {
             onSelect(e);
+            e.stopPropagation();
+          }}
+          onPointerOver={(e) => {
+            onPointerOverModel(e);
+            e.stopPropagation();
+          }}
+          onPointerOut={(e) => {
+            onPointerOutModel(e);
             e.stopPropagation();
           }}
         />

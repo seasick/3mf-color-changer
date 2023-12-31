@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from 'react';
 
 type Props = JSX.IntrinsicElements['group'] & {
   geometry: THREE.Object3D;
-  onLoad?: (e) => void;
 };
 
-export default function Model({ geometry, onLoad, onClick, ...props }: Props) {
+export default function Model({ geometry, ...props }: Props) {
   const groupRef = useRef<THREE.Group>();
   const meshRef = useRef();
 
@@ -16,7 +15,7 @@ export default function Model({ geometry, onLoad, onClick, ...props }: Props) {
 
   return (
     // Center object
-    <mesh ref={meshRef} castShadow receiveShadow onClick={onClick}>
+    <mesh ref={meshRef} castShadow receiveShadow {...props}>
       <group ref={groupRef}></group>
     </mesh>
   );

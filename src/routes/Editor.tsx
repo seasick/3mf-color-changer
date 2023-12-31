@@ -31,6 +31,7 @@ export default function App() {
   const [mode, setMode] = React.useState<'mesh' | 'vertex'>('mesh');
   const [workingColor, setWorkingColor] = React.useState<string>('#f00');
   const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
+  const editorRef = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
     if (mode === 'mesh') {
@@ -112,6 +113,17 @@ export default function App() {
     setShowMeshList(showMeshList);
   };
 
+  const handlePointerOverModel = () => {
+    if (editorRef.current) {
+      editorRef.current.style.cursor = 'crosshair';
+    }
+  };
+  const handlePointerOutModel = () => {
+    if (editorRef.current) {
+      editorRef.current.style.cursor = 'auto';
+    }
+  };
+
   const getMenu = () => {
     if (object) {
       return (
@@ -152,7 +164,16 @@ export default function App() {
             },
           }}
         />
-        {object && <ThreeJsCanvas geometry={object} onSelect={handleSelect} />}
+        {object && (
+          <div style={{ height: '100%' }} ref={editorRef}>
+            <ThreeJsCanvas
+              geometry={object}
+              onSelect={handleSelect}
+              onPointerOverModel={handlePointerOverModel}
+              onPointerOutModel={handlePointerOutModel}
+            />
+          </div>
+        )}
       </Box>
     </PermanentDrawer>
   );

@@ -28,7 +28,11 @@ export default function FileButton({ onChange }: Props) {
       fullWidth
     >
       Select File
-      <VisuallyHiddenInput type="file" onChange={onChange} />
+      <VisuallyHiddenInput
+        type="file"
+        onChange={onChange}
+        accept="application/vnd.ms-3mfdocument"
+      />
     </Button>
   );
 }

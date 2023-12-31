@@ -99,20 +99,12 @@ export default function ModeSelector({
             setShowColorPicker(!showColorPicker);
           }}
         >
-          <Badge
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            badgeContent=" "
+          <PaletteIcon
             sx={{
-              '& .MuiBadge-badge': {
-                backgroundColor: color,
-              },
+              borderBottom: 6,
+              borderBottomColor: color,
             }}
-          >
-            <PaletteIcon />
-          </Badge>
+          />
         </IconButton>
       </Tooltip>
 

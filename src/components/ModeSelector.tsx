@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
+import { useNavigate } from 'react-router-dom';
 
 type Mode = 'mesh' | 'vertex';
 type Props = {
@@ -41,13 +42,13 @@ export default function ModeSelector({
   const [showColorPicker, setShowColorPicker] = React.useState(false);
   const [colorPickerAnchorEl, setColorPickerAnchorEl] =
     React.useState<HTMLButtonElement>();
+  const navigate = useNavigate();
 
   const handleModeClick = (newMode: Mode) => () => onModeChange(newMode);
   const handleColorChange = (newColor) => onColorChange(newColor);
   const handleExportClick = onExport;
   const handleResetClick = () => {
-    // TODO Navigate back to start
-    window.location.reload();
+    navigate('/');
   };
   const handleMeshListClick = () => onShowMeshList(!showMeshList);
 

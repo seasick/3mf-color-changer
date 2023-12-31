@@ -1,49 +1,36 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import { ThreeEvent } from '@react-three/fiber';
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
-import Home from './components/Home';
-import MeshList from './components/MeshList';
-import ModeSelector from './components/ModeSelector';
-import PermanentDrawer from './components/PermanentDrawer';
-import ThreeJsCanvas from './components/threeJs/Canvas';
-import useFile from './components/threeJs/useFile';
-import config from './etc/config.json';
-import { ChangedColors, changeColors } from './utils/3mf/changeColors';
-import createFileFromHttp from './utils/createFileFromHttp';
-import changeMeshColor from './utils/threejs/changeMeshColor';
-import changeVertexColor from './utils/threejs/changeVertexColor';
+import MeshList from '../components/MeshList';
+import ModeSelector from '../components/ModeSelector';
+import PermanentDrawer from '../components/PermanentDrawer';
+import ThreeJsCanvas from '../components/threeJs/Canvas';
+import useFile from '../components/threeJs/useFile';
+import config from '../etc/config.json';
+import { ChangedColors, changeColors } from '../utils/3mf/changeColors';
+import changeMeshColor from '../utils/threejs/changeMeshColor';
+import changeVertexColor from '../utils/threejs/changeVertexColor';
 
 export default function App() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const title = config.title;
-  const [file, setFile] = React.useState<File>();
+  const file = location.state?.file || searchParams.get('example');
+
+  if (!file) {
+    window.location.href = '/';
+    return null;
+  }
+
   const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
   const [colors, setColors] = React.useState<ChangedColors>({});
   const [mode, setMode] = React.useState<'mesh' | 'vertex'>('mesh');
   const [workingColor, setWorkingColor] = React.useState<string>('#f00');
   const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
-
-  const handleFileChange = async (e: string | File) => {
-    if (typeof e === 'string') {
-      setFile(await createFileFromHttp(e));
-    } else {
-      setFile(e);
-    }
-  };
-
-  if (!file) {
-    return (
-      <PermanentDrawer title={title}>
-        <Box sx={{ p: 1 }}>
-          <Home onFileSelect={handleFileChange} />
-        </Box>
-      </PermanentDrawer>
-    );
-  }
 
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
     if (mode === 'mesh') {
@@ -53,11 +40,6 @@ export default function App() {
     }
 
     setSelected(e.object);
-  };
-
-  const handleReset = () => {
-    setSelected(undefined);
-    setFile(undefined);
   };
 
   const handleExport = async () => {

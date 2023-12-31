@@ -11,10 +11,11 @@ import ThreeJsCanvas from '../components/threeJs/Canvas';
 import useFile from '../components/threeJs/useFile';
 import config from '../etc/config.json';
 import { ChangedColors, changeColors } from '../utils/3mf/changeColors';
+import createFileFromHttp from '../utils/createFileFromHttp';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
 
-export default function App() {
+export default function EditRoute() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const title = config.title;
@@ -44,7 +45,11 @@ export default function App() {
   };
 
   const handleExport = async () => {
-    const blob = await changeColors(file, colors);
+    let fileFile = file;
+    if (typeof fileFile === 'string') {
+      fileFile = await createFileFromHttp(fileFile);
+    }
+    const blob = await changeColors(fileFile, colors);
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
 

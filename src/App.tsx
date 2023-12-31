@@ -160,8 +160,14 @@ export default function App() {
             position: 'absolute',
             top: 5,
             left: 5,
-            backgroundColor: 'white',
+            backgroundColor: 'transparent',
             zIndex: 1,
+            '& .MuiButtonBase-root': {
+              backgroundColor: 'white',
+            },
+            '& .MuiButtonBase-root: hover': {
+              backgroundColor: '#efefef',
+            },
           }}
         />
         {object && <ThreeJsCanvas geometry={object} onSelect={handleSelect} />}

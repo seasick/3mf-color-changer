@@ -47,6 +47,7 @@ export default function ModeSelector({
   const handleExportClick = onExport;
   const handleResetClick = () => {
     // TODO Navigate back to start
+    window.location.reload();
   };
   const handleMeshListClick = () => onShowMeshList(!showMeshList);
 

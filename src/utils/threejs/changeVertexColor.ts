@@ -35,7 +35,7 @@ export default function changeVertexColor(
     });
   }
 
-  for (let f of [face.a, face.b, face.c]) {
+  for (const f of [face.a, face.b, face.c]) {
     mesh.geometry.attributes.color.setXYZ(
       f,
       threeColor.r,

@@ -6,14 +6,12 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import PaletteIcon from '@mui/icons-material/Palette';
-import {
-  Badge,
-  Box,
-  ButtonGroup,
-  IconButton,
-  Popover,
-  Tooltip,
-} from '@mui/material';
+import type { SxProps } from '@mui/material';
+import Box from '@mui/material/Box';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
+import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +25,7 @@ type Props = {
   onModeChange: (mode: Mode) => void;
   onShowMeshList: (showMeshList: boolean) => void;
   showMeshList: boolean;
-  sx?: any;
+  sx?: SxProps;
 };
 
 const defaultColors = [

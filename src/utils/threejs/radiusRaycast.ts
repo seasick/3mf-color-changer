@@ -18,7 +18,6 @@ export default function radiusRaycast(
 ) {
   const raycaster = new THREE.Raycaster();
   const intersections: THREE.Intersection[] = [];
-  const start = performance.now();
 
   // Perform raycasts from the center of the circle to its edges. The area must have
   // a good coverage, so we use a small degree step.

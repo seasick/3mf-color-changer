@@ -78,7 +78,7 @@ export async function changeColors(
             // TODO Check if the colors of all triangles are the same. If so, we can set the color
             //  on the object instead of the individual triangles.
 
-            for (let vertex of colors[key].vertex) {
+            for (const vertex of colors[key].vertex) {
               triangles[vertex.face].setAttribute('pid', colorGroup);
               triangles[vertex.face].setAttribute(
                 'p1',

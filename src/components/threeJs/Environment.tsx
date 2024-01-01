@@ -5,33 +5,39 @@ type Props = {
   direction?: [number, number, number];
 };
 
-export const Environment = memo(({ direction = [5, 5, 5] }: Props) => (
-  <>
-    <ambientLight intensity={0.8} />
-    <directionalLight
-      position={direction}
-      intensity={0.5}
-      shadow-mapSize={1024}
-      castShadow
-    />
-    <directionalLight
-      position={[-5, 5, 5]}
-      intensity={0.1}
-      shadow-mapSize={128}
-      castShadow
-    />
-    <directionalLight
-      position={[-5, 5, -5]}
-      intensity={0.1}
-      shadow-mapSize={128}
-      castShadow
-    />
-    <directionalLight
-      position={[0, 5, 0]}
-      intensity={0.1}
-      shadow-mapSize={128}
-      castShadow
-    />
-    <Grid infiniteGrid={true} sectionColor="#CCCCCC" />
-  </>
-));
+export const Environment = memo(function Environment({
+  direction = [5, 5, 5],
+}: Props) {
+  /* eslint-disable react/no-unknown-property */
+  return (
+    <>
+      <ambientLight intensity={0.8} />
+      <directionalLight
+        position={direction}
+        intensity={0.5}
+        shadow-mapSize={1024}
+        castShadow
+      />
+      <directionalLight
+        position={[-5, 5, 5]}
+        intensity={0.1}
+        shadow-mapSize={128}
+        castShadow
+      />
+      <directionalLight
+        position={[-5, 5, -5]}
+        intensity={0.1}
+        shadow-mapSize={128}
+        castShadow
+      />
+      <directionalLight
+        position={[0, 5, 0]}
+        intensity={0.1}
+        shadow-mapSize={128}
+        castShadow
+      />
+      <Grid infiniteGrid={true} sectionColor="#CCCCCC" />
+    </>
+  );
+  /* eslint-enable react/no-unknown-property */
+});

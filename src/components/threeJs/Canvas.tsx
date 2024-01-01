@@ -1,6 +1,5 @@
 import {
   CameraControls,
-  Center,
   ContactShadows,
   GizmoHelper,
   GizmoViewcube,
@@ -12,7 +11,7 @@ import { Environment } from './Environment';
 import Model from './Model';
 
 type Props = JSX.IntrinsicElements['group'] & {
-  geometry: any;
+  geometry: THREE.Object3D;
   onSelect: (e) => void;
   onPointerOverModel: (e) => void;
   onPointerOutModel: (e) => void;

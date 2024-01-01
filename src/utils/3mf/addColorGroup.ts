@@ -15,6 +15,7 @@ export function addColorGroup(xmlDoc: Document, colors: string[]) {
 }
 
 let maxId = 100;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function findNextFreeId(xmlDoc: Document) {
   // TODO: This is not a good way to find a free id. We should instead look through the document
   return maxId++;

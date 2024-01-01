@@ -7,7 +7,6 @@ type Props = JSX.IntrinsicElements['group'] & {
 
 export default function Model({ geometry, ...props }: Props) {
   const groupRef = useRef<THREE.Group>();
-  const meshRef = useRef();
   const [loading, setLoading] = React.useState<boolean>(true);
 
   useEffect(() => {
@@ -19,6 +18,7 @@ export default function Model({ geometry, ...props }: Props) {
   return (
     // Center object
     <Center cacheKey={loading ? 'loading' : 'not_loading'} disableY>
+      {/* eslint-disable-next-line react/no-unknown-property */}
       <mesh castShadow receiveShadow {...props}>
         <group ref={groupRef}></group>
       </mesh>

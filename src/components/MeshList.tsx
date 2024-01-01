@@ -1,15 +1,18 @@
 import PaletteIcon from '@mui/icons-material/Palette';
-import { Box, IconButton, Popover } from '@mui/material';
+import type { SxProps } from '@mui/material';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Popover from '@mui/material/Popover';
 import React, { useMemo } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import * as THREE from 'three';
 
 type Props = {
   geometry: THREE.Object3D;
-  sx?: any;
+  sx?: SxProps;
   selected?: string;
   onChange: (uuid: string, color: string) => void;
 };
@@ -22,7 +25,7 @@ export default function MeshList({ geometry, onChange, selected, sx }: Props) {
   const [colorPickerAnchorEl, setColorPickerAnchorEl] =
     React.useState<HTMLButtonElement>();
 
-  const handleClick = (uuid) => (e) => {
+  const handleClick = (uuid) => () => {
     setOpen({
       ...open,
       [uuid]: !open[uuid],

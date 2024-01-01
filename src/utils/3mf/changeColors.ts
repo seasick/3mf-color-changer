@@ -58,7 +58,7 @@ export async function changeColors(
 
         // Loop through all objects that have a color change and add a color group for each
         Object.keys(colors).forEach((key) => {
-          const obj = xmlDoc.querySelector(`object[name="${key}"]`);
+          const obj = findObjectByName(xmlDoc, key);
 
           if (obj) {
             // Accumulate all unique colors
@@ -113,7 +113,9 @@ function getUniqueColors(colors: ChangedColor): string[] {
   const colorSet = new Set<string>();
 
   // Add the mesh color
+  if (colors.mesh) {
   colorSet.add(colors.mesh);
+  }
 
   // Add all vertex colors
   colors.vertex.forEach((vertex) => {
@@ -121,4 +123,20 @@ function getUniqueColors(colors: ChangedColor): string[] {
   });
 
   return [...colorSet];
+}
+
+function findObjectByName(xmlDoc: Document, name: string): Element | null {
+  const object = xmlDoc.querySelector(`object[name="${name}"]`);
+
+  // If we don't find an object with the given name, we check if there is only one
+  // object in the file. If so, we can assume that this is the object we want to
+  // modify.
+  if (!object) {
+    const objects = xmlDoc.querySelectorAll('object');
+    if (objects.length === 1) {
+      return objects[0];
+    }
+  }
+
+  return object;
 }

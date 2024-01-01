@@ -13,33 +13,6 @@
     <div id="root"></div>
     <script src="index.js"></script>
 
-    <!-- Matomo -->
-    <script>
-      var _paq = (window._paq = window._paq || []);
-      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function () {
-        var u = '//__MATOMO_TRACKING_HOST/';
-        _paq.push(['setTrackerUrl', u + '__MATOMO_TRACKING_PHP']);
-        _paq.push(['setSiteId', '__MATOMO_TRACKING_SITEID']);
-        var d = document,
-          g = d.createElement('script'),
-          s = d.getElementsByTagName('script')[0];
-        g.async = true;
-        g.src = u + '__MATOMO_TRACKING_JS';
-        s.parentNode.insertBefore(g, s);
-      })();
-    </script>
-    <!-- End Matomo Code -->
-
-    <noscript>
-      <img
-        referrerpolicy="no-referrer-when-downgrade"
-        src="https://__MATOMO_TRACKING_HOST/__MATOMO_TRACKING_PHP?idsite=__MATOMO_TRACKING_SITEID&amp;rec=1"
-        style="border: 0"
-        alt=""
-      />
-    </noscript>
+    __TRACKER_SNIPPET
   </body>
 </html>

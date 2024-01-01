@@ -34,10 +34,7 @@ const options = {
       watch: true,
     }),
     replace({
-      __MATOMO_TRACKING_HOST: env.MATOMO_TRACKING_HOST || 'localhost',
-      __MATOMO_TRACKING_PHP: env.MATOMO_TRACKING_PHP || 'matomo.php',
-      __MATOMO_TRACKING_JS: env.MATOMO_TRACKING_JS || 'matomo.js',
-      __MATOMO_TRACKING_SITEID: env.MATOMO_TRACKING_SITEID || '1',
+      __TRACKER_SNIPPET: env.TRACKER_SNIPPET || '',
     }),
   ],
 };

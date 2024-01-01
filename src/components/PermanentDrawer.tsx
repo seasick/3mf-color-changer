@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import config from '../etc/config.json';
 
@@ -28,9 +29,24 @@ export default function PermanentDrawer({ menu, title, children }: Props) {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            noWrap
+            component={Link}
+            sx={{
+              textDecoration: 'none',
+              boxShadow: 'none',
+              color: 'white',
+            }}
+            to="/"
+          >
             {title}
           </Typography>
+          <Box
+            sx={{
+              flexGrow: 1,
+            }}
+          ></Box>
           <IconButton component="a" href={config.github}>
             <GitHubIcon />
           </IconButton>

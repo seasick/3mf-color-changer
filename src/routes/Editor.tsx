@@ -183,7 +183,7 @@ export default function EditRoute() {
   const getMenu = () => {
     if (object) {
       return (
-        <Box sx={{ p: 1 }}>
+        <Box component="div" sx={{ p: 1 }}>
           <MeshList
             geometry={object}
             selected={selected?.uuid}
@@ -192,12 +192,12 @@ export default function EditRoute() {
         </Box>
       );
     }
-    return <Box>...</Box>;
+    return <Box component="div">...</Box>;
   };
 
   return (
     <PermanentDrawer title={title} menu={showMeshList ? getMenu() : null}>
-      <Box sx={{ position: 'relative', height: '100%' }}>
+      <Box component="div" sx={{ position: 'relative', height: '100%' }}>
         <ModeSelector
           color={workingColor}
           mode={mode}

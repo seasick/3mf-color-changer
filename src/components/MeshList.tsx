@@ -120,7 +120,7 @@ export default function MeshList({ geometry, onChange, selected, sx }: Props) {
                 },
               }}
             >
-              <Box sx={{ m: 2 }}>
+              <Box component="div" sx={{ m: 2 }}>
                 <HexColorPicker color={hexColor} onChange={handleColorChange} />
               </Box>
             </Popover>

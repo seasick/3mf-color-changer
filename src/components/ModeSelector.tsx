@@ -159,7 +159,7 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Box sx={{ mt: 5 }} />
+      <Box component="div" sx={{ mt: 5 }} />
       {defaultColors.map((d) => (
         <Tooltip title="Set color" placement="right" key={d}>
           <IconButton
@@ -190,7 +190,7 @@ export default function ModeSelector({
           },
         }}
       >
-        <Box sx={{ m: 2 }}>
+        <Box component="div" sx={{ m: 2 }}>
           <HexColorPicker color={color} onChange={handleColorChange} />
         </Box>
       </Popover>

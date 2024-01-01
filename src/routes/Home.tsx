@@ -31,7 +31,7 @@ export default function HomeRoute() {
 
   return (
     <PermanentDrawer title={title}>
-      <Box sx={{ p: 1, height: '100%' }}>
+      <Box component="div" sx={{ p: 1, height: '100%' }}>
         <Alert severity="info" sx={{ mb: 3 }}>
           This web app helps to add/change colors of 3d models. Currently it
           only supports 3MF files and can only change the color of whole meshes.
@@ -59,7 +59,7 @@ export default function HomeRoute() {
               sx={{ minHeight: '70vh' }}
             >
               <Grid item xs={3}>
-                <Box sx={{ textAlign: 'center' }}>
+                <Box component="div" sx={{ textAlign: 'center' }}>
                   <Typography variant="h4" fontWeight="bold">
                     {title}
                   </Typography>

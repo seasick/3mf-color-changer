@@ -24,7 +24,7 @@ type Props = {
 
 export default function PermanentDrawer({ menu, title, children }: Props) {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box component="div" sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -44,11 +44,7 @@ export default function PermanentDrawer({ menu, title, children }: Props) {
           >
             {title}
           </Typography>
-          <Box
-            sx={{
-              flexGrow: 1,
-            }}
-          ></Box>
+          <Box component="div" sx={{ flexGrow: 1 }}></Box>
 
           <Tooltip title="Report an issue">
             <IconButton
@@ -80,12 +76,15 @@ export default function PermanentDrawer({ menu, title, children }: Props) {
           }}
         >
           <Toolbar />
-          <Box sx={{ overflow: 'auto' }}>{menu}</Box>
+          <Box component="div" sx={{ overflow: 'auto' }}>
+            {menu}
+          </Box>
         </Drawer>
       )}
       <Box component="main" sx={{ flexGrow: 1, pt: 0 }}>
         <Toolbar />
         <Box
+          component="div"
           sx={{
             width: `calc(100vw - ${menu ? drawerWidth : 0}px)`,
             height: `calc(100vh - ${toolbarHeight}px)`,

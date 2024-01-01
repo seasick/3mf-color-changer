@@ -44,7 +44,7 @@ export default function FileDrop({ children, onDrop, sx }: Props) {
   };
 
   return (
-    <Box sx={sx} {...getRootProps()}>
+    <Box component="div" sx={sx} {...getRootProps()}>
       <input {...getInputProps()} />
       {children}
     </Box>

@@ -14,6 +14,7 @@ import { ChangedColors, changeColors } from '../utils/3mf/changeColors';
 import createFileFromHttp from '../utils/createFileFromHttp';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
+import getVertexColor from '../utils/threejs/getVertexColor';
 import radiusRaycast from '../utils/threejs/radiusRaycast';
 
 export default function EditRoute() {
@@ -73,7 +74,10 @@ export default function EditRoute() {
       handleVertexColorChange(e, workingColor);
     } else if (mode === 'vertex_neighbors') {
       handleVertexNeighborColorChange(e, workingColor);
+    } else if (mode === 'select_color') {
+      setWorkingColor(getVertexColor(e.object as THREE.Mesh, e.face));
     }
+
     setSelected(e.object);
   };
 

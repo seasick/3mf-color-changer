@@ -1,5 +1,6 @@
 import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ColorizeIcon from '@mui/icons-material/Colorize';
 import CreateIcon from '@mui/icons-material/Create';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -16,7 +17,7 @@ import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
 
-export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors';
+export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors' | 'select_color';
 type Props = {
   color: string;
   mode: Mode;
@@ -128,6 +129,15 @@ export default function ModeSelector({
               borderBottomColor: color,
             }}
           />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title="Select the color from a vertex" placement="right">
+        <IconButton
+          onClick={handleModeClick('select_color')}
+          sx={mode === 'select_color' ? selectedStyle : style}
+        >
+          <ColorizeIcon />
         </IconButton>
       </Tooltip>
 

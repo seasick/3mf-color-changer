@@ -65,7 +65,7 @@ export default function HomeRoute() {
                   </Typography>
 
                   <Typography variant="h6">
-                    Drag and drop a 3MF file here.
+                    Drag and drop a 3MF file or click here.
                   </Typography>
                 </Box>
                 <Divider sx={{ mt: 5, mb: 5 }} />

@@ -44,6 +44,9 @@ jobs:
           NODE_ENV=production npm run build
         env:
           MATOMO_TRACKING_HOST: ${{ vars.MATOMO_TRACKING_HOST }}
+          MATOMO_TRACKING_PHP: ${{ vars.MATOMO_TRACKING_PHP }}
+          MATOMO_TRACKING_JS: ${{ vars.MATOMO_TRACKING_JS }}
+          MATOMO_TRACKING_SITEID: ${{ vars.MATOMO_TRACKING_SITEID }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -114,7 +114,7 @@ function getUniqueColors(colors: ChangedColor): string[] {
 
   // Add the mesh color
   if (colors.mesh) {
-  colorSet.add(colors.mesh);
+    colorSet.add(colors.mesh);
   }
 
   // Add all vertex colors

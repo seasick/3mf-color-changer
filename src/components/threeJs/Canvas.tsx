@@ -23,6 +23,40 @@ export default function ThreeJsCanvas({
   onPointerOverModel,
   onPointerOutModel,
 }: Props) {
+  const [mouseIsDown, setMouseIsDown] = React.useState(false);
+
+  const handleClick = (e) => {
+    onSelect(e);
+    e.stopPropagation();
+  };
+  const handlePointerDown = (e) => {
+    setMouseIsDown(true);
+    e.stopPropagation();
+  };
+  const handlePointerUp = (e) => {
+    setMouseIsDown(false);
+    e.stopPropagation();
+  };
+
+  const handlePointerOver = (e) => {
+    onPointerOverModel(e);
+    e.stopPropagation();
+  };
+  const handlePointerOut = (e) => {
+    onPointerOutModel(e);
+    e.stopPropagation();
+  };
+  const handlePointerMove = (e) => {
+    if (mouseIsDown) {
+      if (e.buttons === 0) {
+        setMouseIsDown(false);
+      } else {
+        // TODO We might need to debounce here
+        onSelect(e);
+      }
+    }
+  };
+
   return (
     <Canvas
       shadows
@@ -36,22 +70,18 @@ export default function ThreeJsCanvas({
     >
       {/* 3 frames, because the model is centered in the second frame, the third frame is just for safe measure */}
       <ContactShadows frames={3} />
-      <CameraControls />
+      {!mouseIsDown && <CameraControls />}
       <Environment />
       <Model
         geometry={geometry}
-        onClick={(e) => {
-          onSelect(e);
-          e.stopPropagation();
-        }}
-        onPointerOver={(e) => {
-          onPointerOverModel(e);
-          e.stopPropagation();
-        }}
-        onPointerOut={(e) => {
-          onPointerOutModel(e);
-          e.stopPropagation();
-        }}
+        onClick={handleClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerMissed={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onPointerMove={handlePointerMove}
       />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewcube />

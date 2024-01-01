@@ -1,7 +1,7 @@
 import { Center } from '@react-three/drei';
 import React, { useEffect, useRef } from 'react';
 
-type Props = JSX.IntrinsicElements['group'] & {
+type Props = JSX.IntrinsicElements['mesh'] & {
   geometry: THREE.Object3D;
 };
 

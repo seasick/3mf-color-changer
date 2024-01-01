@@ -1,3 +1,4 @@
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CreateIcon from '@mui/icons-material/Create';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
@@ -17,7 +18,7 @@ import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
 
-type Mode = 'mesh' | 'vertex';
+export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors';
 type Props = {
   color: string;
   mode: Mode;
@@ -38,6 +39,7 @@ const defaultColors = [
   '#abdda4',
   '#66c2a5',
   '#3288bd',
+  '#ffffff',
 ];
 
 export default function ModeSelector({
@@ -97,6 +99,18 @@ export default function ModeSelector({
           sx={mode === 'vertex' ? selectedStyle : style}
         >
           <CreateIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip
+        title="Select the vertex+neighbors painting tool (Work in progess, not what you might expect)"
+        placement="right"
+      >
+        <IconButton
+          onClick={handleModeClick('vertex_neighbors')}
+          sx={mode === 'vertex_neighbors' ? selectedStyle : style}
+        >
+          <AutoFixNormalIcon />
         </IconButton>
       </Tooltip>
 

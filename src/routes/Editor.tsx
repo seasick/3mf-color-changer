@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
 import MeshList from '../components/MeshList';
-import ModeSelector from '../components/ModeSelector';
+import ModeSelector, { Mode } from '../components/ModeSelector';
 import PermanentDrawer from '../components/PermanentDrawer';
 import ThreeJsCanvas from '../components/threeJs/Canvas';
 import useFile from '../components/threeJs/useFile';
@@ -14,6 +14,7 @@ import { ChangedColors, changeColors } from '../utils/3mf/changeColors';
 import createFileFromHttp from '../utils/createFileFromHttp';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
+import radiusRaycast from '../utils/threejs/radiusRaycast';
 
 export default function EditRoute() {
   const location = useLocation();
@@ -29,18 +30,50 @@ export default function EditRoute() {
   const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
   const [colors, setColors] = React.useState<ChangedColors>({});
-  const [mode, setMode] = React.useState<'mesh' | 'vertex'>('mesh');
+  const [mode, setMode] = React.useState<Mode>('mesh');
   const [workingColor, setWorkingColor] = React.useState<string>('#f00');
   const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
   const editorRef = React.useRef<HTMLDivElement>(null);
+
+  const addVertexColor = (
+    colors: ChangedColors,
+    meshName: string,
+    faceIndexColor: [number, string][]
+  ) => {
+    const existingVertices = [...(colors[meshName]?.vertex || [])];
+
+    for (const [faceIndex, color] of faceIndexColor) {
+      const existingVertex = existingVertices.findIndex(
+        (f) => f.face === faceIndex
+      );
+
+      if (existingVertex > -1) {
+        existingVertices.splice(existingVertex, 1);
+      } else {
+        existingVertices.push({
+          face: faceIndex!,
+          color,
+        });
+      }
+    }
+
+    return {
+      ...colors,
+      [meshName]: {
+        ...colors[meshName],
+        vertex: existingVertices,
+      },
+    };
+  };
 
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
     if (mode === 'mesh') {
       handleMeshColorChange(e.object.uuid, workingColor);
     } else if (mode === 'vertex') {
       handleVertexColorChange(e, workingColor);
+    } else if (mode === 'vertex_neighbors') {
+      handleVertexNeighborColorChange(e, workingColor);
     }
-
     setSelected(e.object);
   };
 
@@ -80,29 +113,37 @@ export default function EditRoute() {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
-      const existingVertices = [...(colors[mesh.name]?.vertex || [])];
-      const existingVertex = existingVertices.findIndex(
-        (f) => f.face === e.faceIndex
-      );
-
-      if (existingVertex > -1) {
-        existingVertices.splice(existingVertex, 1);
-      } else {
-        existingVertices.push({
-          face: e.faceIndex!,
-          color,
-        });
-      }
-
       changeVertexColor(mesh, color, e.face);
+      setColors(addVertexColor(colors, mesh.name, [[e.faceIndex!, color]]));
+    }
+  };
 
-      setColors({
-        ...colors,
-        [mesh.name]: {
-          ...colors[mesh.name],
-          vertex: existingVertices,
-        },
+  // This function will color a single vertex on a mesh, and will seek its
+  // neighbors which have the same orentation as the initial vertex
+  const handleVertexNeighborColorChange = (
+    e: ThreeEvent<MouseEvent>,
+    color
+  ) => {
+    const mesh = e.object as THREE.Mesh;
+
+    if (e.face) {
+      const toBeChangedVertex: [number, string][] = [];
+      const radius = 0.05;
+      const intersects = radiusRaycast(e.pointer, radius, mesh, e.camera);
+
+      // Change the color of the initial vertex
+      changeVertexColor(mesh, color, e.face);
+      toBeChangedVertex.push([e.faceIndex!, color]);
+
+      // Get through adjacent faces and change the color of the vertices
+      intersects.forEach((intersect) => {
+        if (intersect.face) {
+          changeVertexColor(mesh, color, intersect.face);
+          toBeChangedVertex.push([intersect.faceIndex!, color]);
+        }
       });
+
+      setColors(addVertexColor(colors, mesh.name, toBeChangedVertex));
     }
   };
 
@@ -120,9 +161,15 @@ export default function EditRoute() {
 
   const handlePointerOverModel = () => {
     if (editorRef.current) {
-      editorRef.current.style.cursor = 'crosshair';
+      if (mode === 'vertex_neighbors') {
+        // TODO Draw a circle around the mouse pointer to indicate brush radius
+        editorRef.current.style.cursor = `crosshair`;
+      } else {
+        editorRef.current.style.cursor = 'crosshair';
+      }
     }
   };
+
   const handlePointerOutModel = () => {
     if (editorRef.current) {
       editorRef.current.style.cursor = 'auto';

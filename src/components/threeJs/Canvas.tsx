@@ -24,33 +24,55 @@ export default function ThreeJsCanvas({
   onPointerOutModel,
 }: Props) {
   const [mouseIsDown, setMouseIsDown] = React.useState(false);
+  const cameraControlRef = React.useRef<CameraControls | null>(null);
 
+  // Handle the click on a mesh
   const handleClick = (e) => {
+    e.stopPropagation();
     onSelect(e);
-    e.stopPropagation();
-  };
-  const handlePointerDown = (e) => {
-    setMouseIsDown(true);
-    e.stopPropagation();
-  };
-  const handlePointerUp = (e) => {
-    setMouseIsDown(false);
-    e.stopPropagation();
   };
 
+  // Handles the mouse down on a mesh
+  const handlePointerDown = (e) => {
+    e.stopPropagation();
+    setMouseIsDown(true);
+
+    cameraControlRef.current?.disconnect();
+  };
+
+  // Handles the mouse up on a mesh, but is also used for missed & canceled
+  const handlePointerUp = (e) => {
+    e.stopPropagation();
+    setMouseIsDown(false);
+
+    cameraControlRef.current?.connect(
+      document.getElementById('editor-canvas')!
+    );
+  };
+
+  // Handles the mouse over on a mesh
   const handlePointerOver = (e) => {
+    e.stopPropagation();
     onPointerOverModel(e);
-    e.stopPropagation();
   };
+
+  // Handles the mouse out on a mesh
   const handlePointerOut = (e) => {
-    onPointerOutModel(e);
     e.stopPropagation();
+    onPointerOutModel(e);
   };
+
+  // Handles the mouse move on a mesh and on the canvas
   const handlePointerMove = (e) => {
+    e.stopPropagation();
+
     if (mouseIsDown) {
       if (e.buttons === 0) {
         setMouseIsDown(false);
-      } else {
+        cameraControlRef.current?.connect(
+          document.getElementById('editor-canvas')!
+        );
+      } else if (e.object) {
         // TODO We might need to debounce here
         onSelect(e);
       }
@@ -59,6 +81,7 @@ export default function ThreeJsCanvas({
 
   return (
     <Canvas
+      id="editor-canvas"
       shadows
       camera={{
         fov: 35,
@@ -67,10 +90,11 @@ export default function ThreeJsCanvas({
         far: 1000,
         position: [6, 6, 6],
       }}
+      onMouseMove={handlePointerMove}
     >
       {/* 3 frames, because the model is centered in the second frame, the third frame is just for safe measure */}
       <ContactShadows frames={3} />
-      {!mouseIsDown && <CameraControls />}
+      <CameraControls ref={cameraControlRef} />
       <Environment />
       <Model
         geometry={geometry}

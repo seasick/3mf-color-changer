@@ -2,6 +2,7 @@ import * as esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
 import { replace } from 'esbuild-plugin-replace';
 
+const env = process.env;
 const options = {
   entryPoints: ['src/index.tsx', 'src/index.html'],
   bundle: true,
@@ -33,7 +34,8 @@ const options = {
       watch: true,
     }),
     replace({
-      __MATOMO_TRACKING_HOST: process.env.MATOMO_TRACKING_HOST || 'localhost',
+      __MATOMO_TRACKING_HOST: env.MATOMO_TRACKING_HOST || 'localhost',
+      __MATOMO_TRACKING_SCRIPT: env.MATOMO_TRACKING_SCRIPT || 'matomo.php',
     }),
   ],
 };

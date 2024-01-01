@@ -34,6 +34,10 @@ export default function useFile(
             vertexColors: !!attributes.color,
             flatShading: true,
           });
+
+          if (child.geometry.index) {
+            child.geometry = geometry.toNonIndexed();
+          }
         }
       });
 

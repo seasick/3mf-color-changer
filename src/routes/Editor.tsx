@@ -74,7 +74,7 @@ export default function EditRoute() {
       handleVertexColorChange(e, workingColor);
     } else if (mode === 'vertex_neighbors') {
       handleVertexNeighborColorChange(e, workingColor);
-    } else if (mode === 'select_color') {
+    } else if (mode === 'select_color' && e.face) {
       setWorkingColor(getVertexColor(e.object as THREE.Mesh, e.face));
     }
 

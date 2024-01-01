@@ -41,6 +41,7 @@ jobs:
       - name: build
         run: |
           npm ci
+          npm run lint
           NODE_ENV=production npm run build
         env:
           MATOMO_TRACKING_HOST: ${{ vars.MATOMO_TRACKING_HOST }}

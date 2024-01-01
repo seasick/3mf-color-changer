@@ -54,7 +54,7 @@ export default function EditRoute() {
     const link = document.createElement('a');
 
     link.href = url;
-    link.download = file.name;
+    link.download = file.name || 'export.3mf';
     link.click();
   };
 

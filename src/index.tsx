@@ -9,13 +9,16 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import router from './router';
+import handleUnhandledPromiseRejection from './utils/handleUnhandledPromiseRejection';
+
+window.addEventListener('unhandledrejection', handleUnhandledPromiseRejection);
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <CssBaseline />
     <SnackbarProvider
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'center',
       }}
     />

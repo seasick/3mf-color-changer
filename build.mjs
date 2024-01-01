@@ -1,3 +1,4 @@
+/* eslint-env node */
 import * as esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
 import { replace } from 'esbuild-plugin-replace';

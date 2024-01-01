@@ -1,3 +1,4 @@
+import BugReportIcon from '@mui/icons-material/BugReport';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -5,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -47,9 +49,22 @@ export default function PermanentDrawer({ menu, title, children }: Props) {
               flexGrow: 1,
             }}
           ></Box>
-          <IconButton component="a" href={config.github}>
-            <GitHubIcon />
-          </IconButton>
+
+          <Tooltip title="Report an issue">
+            <IconButton
+              component="a"
+              href={config.github_issues}
+              target="_blank"
+            >
+              <BugReportIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Go to GitHub repository">
+            <IconButton component="a" href={config.github} target="_blank">
+              <GitHubIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       {menu && (

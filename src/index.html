@@ -21,13 +21,13 @@
       _paq.push(['enableLinkTracking']);
       (function () {
         var u = '//__MATOMO_TRACKING_HOST/';
-        _paq.push(['setTrackerUrl', u + '__MATOMO_TRACKING_SCRIPT']);
-        _paq.push(['setSiteId', '2']);
+        _paq.push(['setTrackerUrl', u + '__MATOMO_TRACKING_PHP']);
+        _paq.push(['setSiteId', '__MATOMO_TRACKING_SITEID']);
         var d = document,
           g = d.createElement('script'),
           s = d.getElementsByTagName('script')[0];
         g.async = true;
-        g.src = u + 'matomo.js';
+        g.src = u + '__MATOMO_TRACKING_JS';
         s.parentNode.insertBefore(g, s);
       })();
     </script>
@@ -36,7 +36,7 @@
     <noscript>
       <img
         referrerpolicy="no-referrer-when-downgrade"
-        src="https://__MATOMO_TRACKING_HOST/matomo.php?idsite=2&amp;rec=1"
+        src="https://__MATOMO_TRACKING_HOST/__MATOMO_TRACKING_PHP?idsite=__MATOMO_TRACKING_SITEID&amp;rec=1"
         style="border: 0"
         alt=""
       />

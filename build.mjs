@@ -35,7 +35,9 @@ const options = {
     }),
     replace({
       __MATOMO_TRACKING_HOST: env.MATOMO_TRACKING_HOST || 'localhost',
-      __MATOMO_TRACKING_SCRIPT: env.MATOMO_TRACKING_SCRIPT || 'matomo.php',
+      __MATOMO_TRACKING_PHP: env.MATOMO_TRACKING_PHP || 'matomo.php',
+      __MATOMO_TRACKING_JS: env.MATOMO_TRACKING_JS || 'matomo.js',
+      __MATOMO_TRACKING_SITEID: env.MATOMO_TRACKING_SITEID || '1',
     }),
   ],
 };

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import { ThreeEvent } from '@react-three/fiber';
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLoaderData, useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
 import MeshList from '../components/MeshList';
@@ -22,7 +22,16 @@ import getFace from '../utils/threejs/getFace';
 import getVertexColor from '../utils/threejs/getVertexColor';
 import sameVector3 from '../utils/threejs/sameVector3';
 
-export default function EditRoute() {
+type Settings = {
+  workingColor?: string;
+  mode?: Mode;
+};
+type Props = {
+  onSettingsChange?: (settings: Settings) => void;
+};
+
+export default function EditRoute({ onSettingsChange }: Props) {
+  const settings = useLoaderData() as Settings;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const title = config.title;
@@ -36,10 +45,21 @@ export default function EditRoute() {
   const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
   const [colors, setColors] = React.useState<ChangedColors>({});
-  const [mode, setMode] = React.useState<Mode>('mesh');
-  const [workingColor, setWorkingColor] = React.useState<string>('#f00');
+  const [mode, setMode] = React.useState<Mode>(settings?.mode || 'mesh');
+  const [workingColor, setWorkingColor] = React.useState<string>(
+    settings?.workingColor || '#f00'
+  );
   const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
   const editorRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (onSettingsChange) {
+      onSettingsChange({
+        mode,
+        workingColor,
+      });
+    }
+  }, [mode, workingColor]);
 
   const addVertexColor = (
     colors: ChangedColors,

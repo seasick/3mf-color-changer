@@ -91,9 +91,10 @@ export default function ThreeJsCanvas({
         position: [6, 6, 6],
       }}
       onMouseMove={handlePointerMove}
+      frameloop="demand"
     >
-      {/* 3 frames, because the model is centered in the second frame, the third frame is just for safe measure */}
-      <ContactShadows frames={3} />
+      {/* 5 frames, because the model is centered in the second frame, the additional frames are just for safe measure */}
+      <ContactShadows frames={5} />
       <CameraControls ref={cameraControlRef} />
       <Environment />
       <Model

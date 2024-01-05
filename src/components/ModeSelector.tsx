@@ -1,4 +1,3 @@
-import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import CreateIcon from '@mui/icons-material/Create';
@@ -16,6 +15,8 @@ import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useNavigate } from 'react-router-dom';
+
+import VertexNeighborsButton from './ModeSelector/VertexNeighborsButton';
 
 export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors' | 'select_color';
 type Props = {
@@ -101,17 +102,12 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip
-        title="Select the vertex+neighbors painting tool (Work in progess, not what you might expect)"
-        placement="right"
-      >
-        <IconButton
-          onClick={handleModeClick('vertex_neighbors')}
-          sx={mode === 'vertex_neighbors' ? selectedStyle : style}
-        >
-          <AutoFixNormalIcon />
-        </IconButton>
-      </Tooltip>
+      <VertexNeighborsButton
+        onClick={handleModeClick('vertex_neighbors')}
+        buttonSx={{
+          ...(mode === 'vertex_neighbors' ? selectedStyle : style),
+        }}
+      />
 
       <Tooltip title="Select the painting color" placement="right">
         <IconButton

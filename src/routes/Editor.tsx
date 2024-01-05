@@ -10,12 +10,17 @@ import PermanentDrawer from '../components/PermanentDrawer';
 import ThreeJsCanvas from '../components/threeJs/Canvas';
 import useFile from '../components/threeJs/useFile';
 import config from '../etc/config.json';
-import { ChangedColors, changeColors } from '../utils/3mf/changeColors';
+import {
+  ChangedColor,
+  ChangedColors,
+  changeColors,
+} from '../utils/3mf/changeColors';
 import createFileFromHttp from '../utils/createFileFromHttp';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
+import getFace from '../utils/threejs/getFace';
 import getVertexColor from '../utils/threejs/getVertexColor';
-import radiusRaycast from '../utils/threejs/radiusRaycast';
+import sameVector3 from '../utils/threejs/sameVector3';
 
 export default function EditRoute() {
   const location = useLocation();
@@ -39,22 +44,19 @@ export default function EditRoute() {
   const addVertexColor = (
     colors: ChangedColors,
     meshName: string,
-    faceIndexColor: [number, string][]
+    newVertex: ChangedColor['vertex']
   ) => {
     const existingVertices = [...(colors[meshName]?.vertex || [])];
 
-    for (const [faceIndex, color] of faceIndexColor) {
+    for (const item of newVertex!) {
       const existingVertex = existingVertices.findIndex(
-        (f) => f.face === faceIndex
+        (f) => f.faceIndex === item.faceIndex
       );
 
       if (existingVertex > -1) {
         existingVertices.splice(existingVertex, 1);
       } else {
-        existingVertices.push({
-          face: faceIndex!,
-          color,
-        });
+        existingVertices.push(item);
       }
     }
 
@@ -117,34 +119,70 @@ export default function EditRoute() {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
+      const face = getFace(mesh, e.faceIndex!);
       changeVertexColor(mesh, color, e.face);
-      setColors(addVertexColor(colors, mesh.name, [[e.faceIndex!, color]]));
+      setColors(
+        addVertexColor(colors, mesh.name, [
+          {
+            color,
+            face,
+            faceIndex: e.faceIndex!,
+          },
+        ])
+      );
     }
   };
 
   // This function will color a single vertex on a mesh, and will seek its
   // neighbors which have the same orentation as the initial vertex
-  const handleVertexNeighborColorChange = (
+  const handleVertexNeighborColorChange = async (
     e: ThreeEvent<MouseEvent>,
     color
   ) => {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
-      const toBeChangedVertex: [number, string][] = [];
-      const radius = 0.05;
-      const intersects = radiusRaycast(e.pointer, radius, mesh, e.camera);
+      const toBeChangedVertex: ChangedColor['vertex'] = [];
+      const initialFace = getFace(mesh, e.faceIndex!);
 
       // Change the color of the initial vertex
       changeVertexColor(mesh, color, e.face);
-      toBeChangedVertex.push([e.faceIndex!, color]);
+      toBeChangedVertex.push({
+        color,
+        faceIndex: e.faceIndex!,
+        face: initialFace,
+      });
 
-      // Get through adjacent faces and change the color of the vertices
-      intersects.forEach((intersect) => {
-        if (intersect.face) {
-          changeVertexColor(mesh, color, intersect.face);
-          toBeChangedVertex.push([intersect.faceIndex!, color]);
+      const visitedNeighbors: number[] = [];
+      const walkNeighbors = (
+        neighborFaceIndex: number,
+        expectedNormal: THREE.Vector3
+      ) => {
+        if (visitedNeighbors.includes(neighborFaceIndex)) {
+          return;
         }
+        const face = getFace(mesh, neighborFaceIndex);
+
+        visitedNeighbors.push(neighborFaceIndex);
+
+        if (!sameVector3(face.normal, expectedNormal)) {
+          return;
+        }
+
+        changeVertexColor(mesh, color, face);
+        toBeChangedVertex.push({
+          color,
+          face,
+          faceIndex: neighborFaceIndex,
+        });
+
+        mesh.userData.neighbors[neighborFaceIndex].forEach((neighbor) => {
+          walkNeighbors(neighbor, expectedNormal);
+        });
+      };
+
+      mesh.userData.neighbors[e.faceIndex!].forEach((neighbor) => {
+        walkNeighbors(neighbor, initialFace.normal);
       });
 
       setColors(addVertexColor(colors, mesh.name, toBeChangedVertex));

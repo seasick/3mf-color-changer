@@ -8,6 +8,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
+import JobNotifications from './components/JobNotifications';
+import JobProvider from './components/JobProvider';
+import JobSnackbar from './components/JobSnackbar';
 import router from './router';
 import handleUnhandledPromiseRejection from './utils/handleUnhandledPromiseRejection';
 
@@ -16,12 +19,27 @@ window.addEventListener('unhandledrejection', handleUnhandledPromiseRejection);
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <CssBaseline />
-    <SnackbarProvider
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-    />
-    <RouterProvider router={router} />
+    <JobProvider>
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        Components={{
+          job: JobSnackbar,
+        }}
+      />
+      <JobNotifications />
+      <RouterProvider router={router} />
+    </JobProvider>
   </React.StrictMode>
 );
+
+// Declare module augmentation for notistack to add the job variant
+declare module 'notistack' {
+  interface VariantOverrides {
+    job: {
+      type: string;
+    };
+  }
+}

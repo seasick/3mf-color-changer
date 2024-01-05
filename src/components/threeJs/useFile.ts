@@ -2,10 +2,14 @@ import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader.js';
 
+import findFaceNeighborsJob from '../../jobs/findFaceNeighbors';
+import { useJobContext } from '../JobProvider';
+
 export default function useFile(
   file: File | string | undefined
 ): [THREE.Object3D | null, (object: THREE.Object3D | null) => void] {
   const [object, setObject] = useState<THREE.Object3D | null>(null);
+  const jobContext = useJobContext();
 
   useEffect(() => {
     if (!file) {
@@ -38,6 +42,8 @@ export default function useFile(
           if (child.geometry.index) {
             child.geometry = geometry.toNonIndexed();
           }
+
+          jobContext.addJob(findFaceNeighborsJob(child));
         }
       });
 

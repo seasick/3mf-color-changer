@@ -18,5 +18,10 @@
     "path": "examples/3MFConsortium-samples/rhombicuboctahedron_color.3mf",
     "label": "Colored Rhombicuboctahedron",
     "description": "A rhombicuboctahedron with each face colored differently."
+  },
+  {
+    "path": "examples/VariousObjects.3mf",
+    "label": "Cube",
+    "description": "Various objects (cube, cylinder, cone, pyramid)."
   }
 ]

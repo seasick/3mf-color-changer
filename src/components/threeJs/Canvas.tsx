@@ -6,6 +6,7 @@ import {
 } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React from 'react';
+import * as THREE from 'three';
 
 import { Environment } from './Environment';
 import Model from './Model';
@@ -80,6 +81,14 @@ export default function ThreeJsCanvas({
     }
   };
 
+  const tweenCamera = (position: THREE.Vector3) => {
+    const point = new THREE.Spherical().setFromVector3(
+      new THREE.Vector3(position.x, position.y, position.z)
+    );
+    cameraControlRef.current!.rotateTo(point.theta, point.phi, true);
+    cameraControlRef.current!.fitToSphere(geometry, true);
+  };
+
   return (
     <Canvas
       id="editor-canvas"
@@ -110,7 +119,21 @@ export default function ThreeJsCanvas({
         onPointerMove={handlePointerMove}
       />
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-        <GizmoViewcube />
+        <GizmoViewcube
+          onClick={(e) => {
+            e.stopPropagation();
+            if (
+              e.eventObject.position.x === 0 &&
+              e.eventObject.position.y === 0 &&
+              e.eventObject.position.z === 0
+            ) {
+              tweenCamera(e.face!.normal);
+            } else {
+              tweenCamera(e.eventObject.position);
+            }
+            return null;
+          }}
+        />
       </GizmoHelper>
     </Canvas>
   );

@@ -79,7 +79,10 @@ export default function ModeSelector({
       aria-label="vertical outlined button group"
       sx={sx}
     >
-      <Tooltip title="Select the mesh painting tool" placement="right">
+      <Tooltip
+        title="Select the mesh painting tool to paint whole objects."
+        placement="right"
+      >
         <IconButton
           onClick={handleModeClick('mesh')}
           sx={mode === 'mesh' ? selectedStyle : style}
@@ -88,7 +91,10 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Select the triangle painting tool" placement="right">
+      <Tooltip
+        title="Select the triangle painting tool to paint the smallest components of your model."
+        placement="right"
+      >
         <IconButton
           onClick={handleModeClick('triangle')}
           sx={mode === 'triangle' ? selectedStyle : style}
@@ -123,7 +129,7 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Select the color from a triangle" placement="right">
+      <Tooltip title="Select the color from a model" placement="right">
         <IconButton
           onClick={handleModeClick('select_color')}
           sx={mode === 'select_color' ? selectedStyle : style}

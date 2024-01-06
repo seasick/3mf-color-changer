@@ -1,7 +1,6 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import CreateIcon from '@mui/icons-material/Create';
-import FiberNewIcon from '@mui/icons-material/FiberNew';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
@@ -14,8 +13,8 @@ import Popover from '@mui/material/Popover';
 import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
-import { useNavigate } from 'react-router-dom';
 
+import UseNewModelButton from './ModeSelector/UseNewModelButton';
 import VertexNeighborsButton from './ModeSelector/VertexNeighborsButton';
 
 export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors' | 'select_color';
@@ -55,14 +54,10 @@ export default function ModeSelector({
   const [showColorPicker, setShowColorPicker] = React.useState(false);
   const [colorPickerAnchorEl, setColorPickerAnchorEl] =
     React.useState<HTMLButtonElement>();
-  const navigate = useNavigate();
 
   const handleModeClick = (newMode: Mode) => () => onModeChange(newMode);
   const handleColorChange = (newColor) => onColorChange(newColor);
   const handleExportClick = onExport;
-  const handleResetClick = () => {
-    navigate('/');
-  };
   const handleMeshListClick = () => onShowMeshList(!showMeshList);
 
   const style = {
@@ -137,11 +132,7 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Use a new model" placement="right">
-        <IconButton onClick={handleResetClick} sx={{ ...style, mt: 5 }}>
-          <FiberNewIcon />
-        </IconButton>
-      </Tooltip>
+      <UseNewModelButton buttonSx={{ ...style, mt: 5 }} />
 
       <Tooltip title="Export your changes in a 3MF file" placement="right">
         <IconButton onClick={handleExportClick} sx={style}>

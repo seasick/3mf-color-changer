@@ -42,7 +42,6 @@ export default function Editor({ onSettingsChange }: Props) {
 
   const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
-  const [colors, setColors] = React.useState<ChangedColors>({});
   const [mode, setMode] = React.useState<Mode>(settings?.mode || 'mesh');
   const [workingColor, setWorkingColor] = React.useState<string>(
     settings?.workingColor || '#f00'
@@ -59,38 +58,7 @@ export default function Editor({ onSettingsChange }: Props) {
     }
   }, [mode, workingColor]);
 
-  const addVertexColor = (
-    colors: ChangedColors,
-    meshName: string,
-    newVertex: ChangedColor['vertex']
-  ) => {
-    const existingVertices = [...(colors[meshName]?.vertex || [])];
-
-    for (const item of newVertex!) {
-      const existingVertex = existingVertices.findIndex(
-        (f) => f.faceIndex === item.faceIndex
-      );
-
-      if (existingVertex > -1) {
-        existingVertices.splice(existingVertex, 1);
-      } else {
-        existingVertices.push(item);
-      }
-    }
-
-    return {
-      ...colors,
-      [meshName]: {
-        ...colors[meshName],
-        vertex: existingVertices,
-      },
-    };
-  };
-
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
-    // TODO There is somewhere trouble in here, that if updates come too fast, then
-    //  the colors are not set correctly (i.e. they are overwriting each other)
-
     if (mode === 'mesh') {
       handleMeshColorChange(e.object.uuid, workingColor);
     } else if (mode === 'vertex') {
@@ -114,13 +82,6 @@ export default function Editor({ onSettingsChange }: Props) {
       if (child.uuid !== uuid) {
         return;
       }
-      setColors({
-        ...colors,
-        [child.name]: {
-          ...colors[child.name],
-          mesh: color,
-        },
-      });
 
       changeMeshColor(child as THREE.Mesh, color);
     });
@@ -130,17 +91,7 @@ export default function Editor({ onSettingsChange }: Props) {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
-      const face = getFace(mesh, e.faceIndex!);
       changeVertexColor(mesh, color, e.face);
-      setColors(
-        addVertexColor(colors, mesh.name, [
-          {
-            color,
-            face,
-            faceIndex: e.faceIndex!,
-          },
-        ])
-      );
     }
   };
 
@@ -153,16 +104,10 @@ export default function Editor({ onSettingsChange }: Props) {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
-      const toBeChangedVertex: ChangedColor['vertex'] = [];
       const initialFace = getFace(mesh, e.faceIndex!);
 
       // Change the color of the initial vertex
       changeVertexColor(mesh, color, e.face);
-      toBeChangedVertex.push({
-        color,
-        faceIndex: e.faceIndex!,
-        face: initialFace,
-      });
 
       const visitedNeighbors: number[] = [];
       const walkNeighbors = (
@@ -181,12 +126,6 @@ export default function Editor({ onSettingsChange }: Props) {
         }
 
         changeVertexColor(mesh, color, face);
-        toBeChangedVertex.push({
-          color,
-          face,
-          faceIndex: neighborFaceIndex,
-        });
-
         mesh.userData.neighbors[neighborFaceIndex].forEach((neighbor) => {
           walkNeighbors(neighbor, expectedNormal);
         });
@@ -195,8 +134,6 @@ export default function Editor({ onSettingsChange }: Props) {
       mesh.userData.neighbors[e.faceIndex!].forEach((neighbor) => {
         walkNeighbors(neighbor, initialFace.normal);
       });
-
-      setColors(addVertexColor(colors, mesh.name, toBeChangedVertex));
     }
   };
 

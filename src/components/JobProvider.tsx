@@ -28,7 +28,6 @@ const JobProvider: React.FC<JobProviderProps> = ({ children }) => {
 
   const addJob = (job: Job) => {
     job.promise.then(() => {
-      console.log('Job finished');
       setJobs((prevJobs) => prevJobs.filter((j) => j !== job));
     });
 

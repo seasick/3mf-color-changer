@@ -7,6 +7,8 @@ import {
   ZipWriter,
 } from '@zip.js/zip.js';
 
+import getFace from '../threejs/getFace';
+import getVertexColor from '../threejs/getVertexColor';
 import { addColorGroup } from './addColorGroup';
 
 type Color = string;
@@ -30,7 +32,7 @@ export type ChangedColors = {
 /* Applies the color changes to a given 3MF file and returns the content blob of the new file */
 export async function changeColors(
   file: File,
-  colors: ChangedColors
+  object: THREE.Object3D
 ): Promise<Blob> {
   // Unzip the used 3mf file
   const zipFileWriter = new BlobWriter();
@@ -38,6 +40,7 @@ export async function changeColors(
   const zipWriter = new ZipWriter(zipFileWriter);
   const zipReader = new ZipReader(zipFileReader);
   const entries = await zipReader.getEntries();
+  let nextId = 100; // TODO
 
   // Loop through all entries and add them to the new zip file. If the entry is the
   // 3dmodel.model file, we will change the colors.
@@ -69,39 +72,59 @@ export async function changeColors(
           );
       }
 
-      // Loop through all objects that have a color change and add a color group for each
-      Object.keys(colors).forEach((key) => {
-        const obj = findObjectByName(xmlDoc, key);
+      object.traverse((child) => {
+        const mesh = child as THREE.Mesh;
+
+        if (!mesh.isMesh) {
+          return;
+        }
+        const geometry = mesh.geometry;
+        const attributes = geometry.attributes;
+
+        // Find the object in the 3MF file that matches the mesh
+        const obj = findObjectByName(xmlDoc, mesh.name);
 
         if (obj) {
-          // Accumulate all unique colors
-          const colorSet = getUniqueColors(colors[key]);
-
-          // Add the colors as a group
-          const colorGroup = addColorGroup(xmlDoc, colorSet);
-
-          // Fetch all triangles to later set their color
           const triangles = Array.from(obj.getElementsByTagName('triangle'));
+          const colorGroup: string[] = [];
 
-          // Check if the colors of all triangles are the same. If so, we can set
-          // the color on the object instead of the individual triangles.
-          if (colorSet.length === 1) {
-            obj.setAttribute('pid', colorGroup);
-            obj.setAttribute('pindex', '0');
+          // Get the color of the mesh
+          if (mesh.material.color) {
+            colorGroup.push(`#${mesh.material.color.getHexString()}`);
           }
 
-          for (const vertex of colors[key].vertex || []) {
-            // Find the index of the vertex in the existing list
-            const triangleIdx = findTriangleIndex(obj, vertex.face);
+          // Go through all faces
+          for (let i = 0; i < attributes.position.count / 3; ++i) {
+            const face = getFace(mesh, i);
+            const triangleIdx = findTriangleIndex(obj, face);
 
-            triangles[triangleIdx].setAttribute('pid', colorGroup);
+            // Find the color of the face
+            const color = getVertexColor(mesh, face);
+
+            // Add the color to the color group
+            if (!colorGroup.includes(color)) {
+              colorGroup.push(color);
+            }
+
+            // Set the pid and p1 attributes on the triangle
+            triangles[triangleIdx].setAttribute('pid', nextId.toString());
             triangles[triangleIdx].setAttribute(
               'p1',
-              colorSet.findIndex((color) => color === vertex.color).toString()
+              colorGroup.findIndex((c) => c === color).toString()
             );
           }
+
+          // It seems that in some cases, setting the color on the model is necessary. Otherwise
+          // the color of the faces is not applied to the object. I don't know why this is the case.
+          obj.setAttribute('pid', '100');
+          obj.setAttribute('pindex', '0');
+
+          addColorGroup(xmlDoc, colorGroup, nextId.toString());
+          ++nextId;
         }
       });
+
+      // TODO Remove unused colors and color groups
 
       // Save the file
       const serializer = new XMLSerializer();
@@ -118,22 +141,6 @@ export async function changeColors(
 
   // Get the data blob and return it
   return zipFileWriter.getData();
-}
-
-function getUniqueColors(colors: ChangedColor): string[] {
-  const colorSet = new Set<string>();
-
-  // Add the mesh color
-  if (colors.mesh) {
-    colorSet.add(colors.mesh);
-  }
-
-  // Add all vertex colors
-  colors.vertex?.forEach((vertex) => {
-    colorSet.add(vertex.color);
-  });
-
-  return [...colorSet];
 }
 
 function findObjectByName(xmlDoc: Document, name: string): Element | null {
@@ -161,13 +168,17 @@ function findTriangleIndex(mesh: Element, face: Face): number {
   // of the triangle in the list.
   const vertices = Array.from(mesh.getElementsByTagName('vertex'));
   const triangles = Array.from(mesh.getElementsByTagName('triangle'));
-  const coords = { v1: 0, v2: 0, v3: 0 };
+  const multiple = {
+    v1: [] as number[],
+    v2: [] as number[],
+    v3: [] as number[],
+  };
 
   const check = (x: number, y: number, z: number, face) => {
     return (
-      x.toFixed(4) === face.x.toFixed(4) &&
-      y.toFixed(4) === face.y.toFixed(4) &&
-      z.toFixed(4) === face.z.toFixed(4)
+      Math.abs(x - face.x) < 0.01 &&
+      Math.abs(y - face.y) < 0.01 &&
+      Math.abs(z - face.z) < 0.01
     );
   };
 
@@ -181,17 +192,31 @@ function findTriangleIndex(mesh: Element, face: Face): number {
 
     // Check if the coordinates match
     if (check(x, y, z, face.v1)) {
-      coords.v1 = i;
-    } else if (check(x, y, z, face.v2)) {
-      coords.v2 = i;
-    } else if (check(x, y, z, face.v3)) {
-      coords.v3 = i;
+      multiple.v1.push(i);
+    }
+    if (check(x, y, z, face.v2)) {
+      multiple.v2.push(i);
+    }
+    if (check(x, y, z, face.v3)) {
+      multiple.v3.push(i);
     }
   }
 
-  const found = mesh.querySelector(
-    `triangle[v1="${coords.v1}"][v2="${coords.v2}"][v3="${coords.v3}"]`
-  );
+  let found;
+
+  for (const v1 of multiple.v1) {
+    for (const v2 of multiple.v2) {
+      for (const v3 of multiple.v3) {
+        if (found) {
+          break;
+        }
+
+        found = mesh.querySelector(
+          `triangle[v1="${v1}"][v2="${v2}"][v3="${v3}"]`
+        );
+      }
+    }
+  }
 
   if (!found) {
     throw new Error(

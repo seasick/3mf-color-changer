@@ -1,6 +1,11 @@
-export function addColorGroup(xmlDoc: Document, colors: string[]) {
+export function addColorGroup(
+  xmlDoc: Document,
+  colors: string[],
+  colorGroupId?: string
+) {
   const colorGroup = xmlDoc.createElement('m:colorgroup');
-  const colorGroupId = findNextFreeId(xmlDoc).toString();
+
+  colorGroupId = colorGroupId || findNextFreeId(xmlDoc).toString();
   colorGroup.setAttribute('id', colorGroupId);
 
   for (let i = 0; i < colors.length; i++) {

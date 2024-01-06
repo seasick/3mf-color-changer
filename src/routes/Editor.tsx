@@ -108,7 +108,7 @@ export default function EditRoute({ onSettingsChange }: Props) {
     if (typeof fileFile === 'string') {
       fileFile = await createFileFromHttp(fileFile);
     }
-    const blob = await changeColors(fileFile, colors);
+    const blob = await changeColors(fileFile, object!);
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
 

@@ -90,6 +90,9 @@ export default function EditRoute({ onSettingsChange }: Props) {
   };
 
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
+    // TODO There is somewhere trouble in here, that if updates come too fast, then
+    //  the colors are not set correctly (i.e. they are overwriting each other)
+
     if (mode === 'mesh') {
       handleMeshColorChange(e.object.uuid, workingColor);
     } else if (mode === 'vertex') {

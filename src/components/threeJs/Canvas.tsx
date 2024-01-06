@@ -68,6 +68,7 @@ export default function ThreeJsCanvas({
 
     if (mouseIsDown) {
       if (e.buttons === 0) {
+        // TODO It happens sometimes that camera control is tried to be attached, but it is already attached
         setMouseIsDown(false);
         cameraControlRef.current?.connect(
           document.getElementById('editor-canvas')!

@@ -2,12 +2,12 @@ import React from 'react';
 import { createHashRouter } from 'react-router-dom';
 
 import Editor from './components/Editor';
-import HomeRoute from './routes/Home';
+import Home from './components/Home';
 
 const router = createHashRouter([
   {
     path: '/',
-    element: <HomeRoute />,
+    element: <Home />,
   },
   {
     path: '/editor',

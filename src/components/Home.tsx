@@ -12,10 +12,10 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import FileDrop from '../components/FileDrop';
-import PermanentDrawer from '../components/PermanentDrawer';
 import config from '../etc/config.json';
 import examples from '../etc/examples.json';
+import FileDrop from './FileDrop';
+import PermanentDrawer from './PermanentDrawer';
 
 export default function HomeRoute() {
   const title = config.title;
@@ -34,10 +34,10 @@ export default function HomeRoute() {
       <Box component="div" sx={{ p: 1, height: '100%' }}>
         <Alert severity="info" sx={{ mb: 3 }}>
           This web app helps to add/change colors of 3d models. Currently it
-          only supports 3MF files and can only change the color of whole meshes.
-          Files loaded from your computer will not be sent to any server. You
-          can either upload a file from your computer or select one of the
-          examples below.
+          only supports 3MF files and can change the color of whole meshes or
+          single faces. Files loaded from your computer will not be sent to any
+          server. You can either upload a file from your computer or select one
+          of the examples below.
         </Alert>
 
         <Stack
@@ -48,7 +48,7 @@ export default function HomeRoute() {
         >
           <FileDrop
             onDrop={(files) => handleFileChange(files[0])}
-            sx={{ mt: 2, width: '100%' }}
+            sx={{ mt: 2, width: '100%', mb: 2 }}
           >
             <Grid
               container
@@ -56,7 +56,7 @@ export default function HomeRoute() {
               direction="column"
               alignItems="center"
               justifyContent="center"
-              sx={{ minHeight: '70vh' }}
+              sx={{ minHeight: '50vh' }}
             >
               <Grid item xs={3}>
                 <Box component="div" sx={{ textAlign: 'center' }}>

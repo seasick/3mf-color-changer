@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader.js';
 
 import findFaceNeighborsJob from '../../jobs/findFaceNeighbors';
 import { useJobContext } from '../JobProvider';

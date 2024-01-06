@@ -12,7 +12,7 @@ export default function changeMeshColor(mesh: THREE.Mesh, color: string) {
   }
 
   // TODO The mesh color shouldn't be stored in the geometry, but in the material.
-  //  But that would require to make the user aware that there is material collor and vertex colors.
+  //  But that would require to make the user aware that there is material color and vertex colors.
 
   const attribute = new THREE.BufferAttribute(new Float32Array(filledArray), 3);
   attribute.needsUpdate = true;

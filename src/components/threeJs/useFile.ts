@@ -4,6 +4,8 @@ import { ThreeMFLoader } from 'three/examples/jsm/loaders/3MFLoader.js';
 
 import findFaceNeighborsJob from '../../jobs/findFaceNeighbors';
 import { useJobContext } from '../JobProvider';
+import readFromFile from './readFromFile';
+import readFromUrl from './readFromUrl';
 
 export default function useFile(
   file: File | string | undefined
@@ -11,12 +13,21 @@ export default function useFile(
   const [object, setObject] = useState<THREE.Object3D | null>(null);
   const jobContext = useJobContext();
 
+  // TODO Somehow this useeffect is called twice although the file didn't change.
   useEffect(() => {
-    if (!file) {
-      return;
-    }
+    (async () => {
+      if (!file) {
+        return;
+      }
 
-    const afterEffect = (object) => {
+      let object;
+
+      if (typeof file === 'string') {
+        object = await readFromUrl(file);
+      } else {
+        object = await readFromFile(file);
+      }
+
       object.rotation.set(-Math.PI / 2, 0, 0); // z-up conversion
 
       // Objects are way too big, scale them down. Most likely this is because 3MF files are
@@ -48,42 +59,8 @@ export default function useFile(
       });
 
       setObject(object);
-    };
-
-    if (typeof file === 'string') {
-      readFromUrl(file, afterEffect);
-    } else {
-      readFromFile(file, afterEffect);
-    }
+    })();
   }, [file]);
 
   return [object, setObject];
-}
-
-function readFromFile(file: File, callback: (object: THREE.Object3D) => void) {
-  const reader = new FileReader();
-
-  reader.addEventListener('load', (event) => {
-    if (!event.target) {
-      return;
-    }
-
-    const contents = event.target.result as ArrayBuffer;
-    const loader = new ThreeMFLoader();
-    const object = loader.parse(contents);
-
-    callback(object);
-  });
-
-  reader.readAsArrayBuffer(file);
-}
-
-function readFromUrl(url: string, callback: (object: THREE.Object3D) => void) {
-  fetch(url).then(async (response) => {
-    const contents = await response.arrayBuffer();
-    const loader = new ThreeMFLoader();
-    const object = loader.parse(contents);
-
-    callback(object);
-  });
 }

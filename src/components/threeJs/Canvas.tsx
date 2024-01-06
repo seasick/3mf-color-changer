@@ -1,9 +1,4 @@
-import {
-  CameraControls,
-  ContactShadows,
-  GizmoHelper,
-  GizmoViewcube,
-} from '@react-three/drei';
+import { CameraControls, GizmoHelper, GizmoViewcube } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import React from 'react';
 import * as THREE from 'three';

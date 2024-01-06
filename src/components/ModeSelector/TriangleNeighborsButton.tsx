@@ -13,7 +13,7 @@ type Props = {
   buttonSx?: SxProps;
 };
 
-export default function FaceNeighborsButton({ onClick, buttonSx }: Props) {
+export default function TriangleNeighborsButton({ onClick, buttonSx }: Props) {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
 
@@ -53,12 +53,15 @@ export default function FaceNeighborsButton({ onClick, buttonSx }: Props) {
     <Tooltip
       title={
         <>
-          <p>Selects all faces on the same plane.</p>
+          <p>
+            Selects the triangle neighbor painting tool to paint all triangles
+            on the same plane.
+          </p>
           {processing ? (
             <p>
-              Face neighbors are currently calculated. Depending on the model
-              size and its complexity, this could take a few seconds. Processed{' '}
-              {Math.round(progress * 100)}% of faces.
+              Triangle neighbors are currently calculated. Depending on the
+              model size and its complexity, this could take a few seconds.
+              Processed {Math.round(progress * 100)}% of triangles.
             </p>
           ) : null}
         </>

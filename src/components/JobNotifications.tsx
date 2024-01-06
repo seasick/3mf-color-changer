@@ -36,7 +36,7 @@ export default function JobNotifications() {
 function getJobTitle(type: string) {
   switch (type) {
     case FIND_FACE_NEIGHBORS_TYPE:
-      return 'Calculate face neighbors';
+      return 'Calculate triangle neighbors';
     case EXPORT_FILE_TYPE:
       return 'Export file';
     default:

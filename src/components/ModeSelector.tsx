@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 
-import FaceNeighborsButton from './ModeSelector/FaceNeighborsButton';
+import TriangleNeighborsButton from './ModeSelector/TriangleNeighborsButton';
 import UseNewModelButton from './ModeSelector/UseNewModelButton';
 
 export type Mode = 'mesh' | 'triangle' | 'triangle_neighbors' | 'select_color';
@@ -103,7 +103,7 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <FaceNeighborsButton
+      <TriangleNeighborsButton
         onClick={handleModeClick('triangle_neighbors')}
         buttonSx={{
           ...(mode === 'triangle_neighbors' ? selectedStyle : style),

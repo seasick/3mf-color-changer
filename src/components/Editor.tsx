@@ -4,11 +4,6 @@ import React, { useEffect } from 'react';
 import { useLoaderData, useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
-import MeshList from '../components/MeshList';
-import ModeSelector, { Mode } from '../components/ModeSelector';
-import PermanentDrawer from '../components/PermanentDrawer';
-import ThreeJsCanvas from '../components/threeJs/Canvas';
-import useFile from '../components/threeJs/useFile';
 import config from '../etc/config.json';
 import {
   ChangedColor,
@@ -21,6 +16,11 @@ import changeVertexColor from '../utils/threejs/changeVertexColor';
 import getFace from '../utils/threejs/getFace';
 import getVertexColor from '../utils/threejs/getVertexColor';
 import sameVector3 from '../utils/threejs/sameVector3';
+import MeshList from './MeshList';
+import ModeSelector, { Mode } from './ModeSelector';
+import PermanentDrawer from './PermanentDrawer';
+import ThreeJsCanvas from './threeJs/Canvas';
+import useFile from './threeJs/useFile';
 
 type Settings = {
   workingColor?: string;
@@ -30,7 +30,7 @@ type Props = {
   onSettingsChange?: (settings: Settings) => void;
 };
 
-export default function EditRoute({ onSettingsChange }: Props) {
+export default function Editor({ onSettingsChange }: Props) {
   const settings = useLoaderData() as Settings;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);

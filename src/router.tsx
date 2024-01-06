@@ -1,7 +1,7 @@
 import React from 'react';
 import { createHashRouter } from 'react-router-dom';
 
-import EditorRoute from './routes/Editor';
+import Editor from './components/Editor';
 import HomeRoute from './routes/Home';
 
 const router = createHashRouter([
@@ -12,7 +12,7 @@ const router = createHashRouter([
   {
     path: '/editor',
     element: (
-      <EditorRoute
+      <Editor
         onSettingsChange={(settings) => {
           if (localStorage) {
             localStorage.setItem('settings', JSON.stringify(settings));

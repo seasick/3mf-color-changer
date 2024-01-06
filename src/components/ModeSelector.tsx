@@ -1,8 +1,6 @@
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import CreateIcon from '@mui/icons-material/Create';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import PaletteIcon from '@mui/icons-material/Palette';
 import type { SxProps } from '@mui/material';
@@ -24,8 +22,6 @@ type Props = {
   onColorChange: (color: string) => void;
   onExport: () => void;
   onModeChange: (mode: Mode) => void;
-  onShowMeshList: (showMeshList: boolean) => void;
-  showMeshList: boolean;
   sx?: SxProps;
 };
 
@@ -47,8 +43,6 @@ export default function ModeSelector({
   onColorChange,
   onExport,
   onModeChange,
-  onShowMeshList,
-  showMeshList,
   sx,
 }: Props) {
   const [showColorPicker, setShowColorPicker] = React.useState(false);
@@ -58,7 +52,6 @@ export default function ModeSelector({
   const handleModeClick = (newMode: Mode) => () => onModeChange(newMode);
   const handleColorChange = (newColor) => onColorChange(newColor);
   const handleExportClick = onExport;
-  const handleMeshListClick = () => onShowMeshList(!showMeshList);
 
   const style = {
     border: 1,
@@ -143,12 +136,6 @@ export default function ModeSelector({
       <Tooltip title="Export your changes in a 3MF file" placement="right">
         <IconButton onClick={handleExportClick} sx={style}>
           <FileDownloadIcon />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip title="Show mesh list" placement="right">
-        <IconButton onClick={handleMeshListClick} sx={style}>
-          {showMeshList ? <ChevronLeftIcon /> : <FormatListBulletedIcon />}
         </IconButton>
       </Tooltip>
 

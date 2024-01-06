@@ -12,7 +12,6 @@ import getFace from '../utils/threejs/getFace';
 import getFaceColor from '../utils/threejs/getFaceColor';
 import sameVector3 from '../utils/threejs/sameVector3';
 import { useJobContext } from './JobProvider';
-import MeshList from './MeshList';
 import ModeSelector, { Mode } from './ModeSelector';
 import PermanentDrawer from './PermanentDrawer';
 import ThreeJsCanvas from './threeJs/Canvas';
@@ -39,13 +38,11 @@ export default function Editor({ onSettingsChange }: Props) {
     return null;
   }
 
-  const [selected, setSelected] = React.useState<THREE.Object3D>();
   const [object] = useFile(file);
   const [mode, setMode] = React.useState<Mode>(settings?.mode || 'mesh');
   const [workingColor, setWorkingColor] = React.useState<string>(
     settings?.workingColor || '#f00'
   );
-  const [showMeshList, setShowMeshList] = React.useState<boolean>(false);
   const editorRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -67,8 +64,6 @@ export default function Editor({ onSettingsChange }: Props) {
     } else if (mode === 'select_color' && e.face) {
       setWorkingColor(getFaceColor(e.object as THREE.Mesh, e.face));
     }
-
-    setSelected(e.object);
   };
 
   const handleExport = async () => {
@@ -144,10 +139,6 @@ export default function Editor({ onSettingsChange }: Props) {
     setMode(newMode);
   };
 
-  const handleShowMeshList = (showMeshList) => {
-    setShowMeshList(showMeshList);
-  };
-
   const handlePointerOverModel = () => {
     if (editorRef.current) {
       if (mode === 'triangle_neighbors') {
@@ -165,23 +156,8 @@ export default function Editor({ onSettingsChange }: Props) {
     }
   };
 
-  const getMenu = () => {
-    if (object) {
-      return (
-        <Box component="div" sx={{ p: 1 }}>
-          <MeshList
-            geometry={object}
-            selected={selected?.uuid}
-            onChange={handleMeshColorChange}
-          />
-        </Box>
-      );
-    }
-    return <Box component="div">...</Box>;
-  };
-
   return (
-    <PermanentDrawer title={title} menu={showMeshList ? getMenu() : null}>
+    <PermanentDrawer title={title}>
       <Box component="div" sx={{ position: 'relative', height: '100%' }}>
         <ModeSelector
           color={workingColor}
@@ -189,8 +165,6 @@ export default function Editor({ onSettingsChange }: Props) {
           onColorChange={handleWorkingColorChange}
           onExport={handleExport}
           onModeChange={handleModeChange}
-          onShowMeshList={handleShowMeshList}
-          showMeshList={showMeshList}
           sx={{
             position: 'absolute',
             top: 5,

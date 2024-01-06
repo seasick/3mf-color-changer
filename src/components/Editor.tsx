@@ -5,17 +5,14 @@ import { useLoaderData, useLocation } from 'react-router-dom';
 import * as THREE from 'three';
 
 import config from '../etc/config.json';
-import {
-  ChangedColor,
-  ChangedColors,
-  changeColors,
-} from '../utils/3mf/changeColors';
-import createFileFromHttp from '../utils/createFileFromHttp';
+import exportFileJob from '../jobs/exportFile';
+import { ChangedColor, ChangedColors } from '../utils/3mf/changeColors';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
 import getFace from '../utils/threejs/getFace';
 import getVertexColor from '../utils/threejs/getVertexColor';
 import sameVector3 from '../utils/threejs/sameVector3';
+import { useJobContext } from './JobProvider';
 import MeshList from './MeshList';
 import ModeSelector, { Mode } from './ModeSelector';
 import PermanentDrawer from './PermanentDrawer';
@@ -36,6 +33,7 @@ export default function Editor({ onSettingsChange }: Props) {
   const searchParams = new URLSearchParams(location.search);
   const title = config.title;
   const file = location.state?.file || searchParams.get('example');
+  const { addJob } = useJobContext();
 
   if (!file) {
     window.location.href = '/';
@@ -107,17 +105,7 @@ export default function Editor({ onSettingsChange }: Props) {
   };
 
   const handleExport = async () => {
-    let fileFile = file;
-    if (typeof fileFile === 'string') {
-      fileFile = await createFileFromHttp(fileFile);
-    }
-    const blob = await changeColors(fileFile, object!);
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = file.name || 'export.3mf';
-    link.click();
+    addJob(exportFileJob(file, object!));
   };
 
   const handleMeshColorChange = (uuid, color: string) => {

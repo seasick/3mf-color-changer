@@ -6,6 +6,7 @@ export type Job = {
   promise: ProgressPromise<void>;
   type: string;
   label?: string;
+  progressVariant?: 'determinate' | 'indeterminate';
 };
 
 type ContextValue = {

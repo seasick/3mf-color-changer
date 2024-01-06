@@ -109,7 +109,7 @@ const JobSnackbar = forwardRef<HTMLDivElement, JobSnackbarProps>(
               <Grid item xs={10}>
                 <Typography>{props.message}</Typography>
                 <LinearProgress
-                  variant="determinate"
+                  variant={jobs[0].progressVariant || 'determinate'}
                   value={progress}
                   color={progress === 100 ? 'success' : 'primary'}
                 />
@@ -126,7 +126,7 @@ const JobSnackbar = forwardRef<HTMLDivElement, JobSnackbarProps>(
                   ) : (
                     <CircularProgress
                       size="1rem"
-                      variant="determinate"
+                      variant={job.progressVariant || 'determinate'}
                       value={job.promise.progress * 100}
                     />
                   )}{' '}

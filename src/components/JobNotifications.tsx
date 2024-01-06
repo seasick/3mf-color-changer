@@ -1,6 +1,7 @@
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect } from 'react';
 
+import { TYPE as EXPORT_FILE_TYPE } from '../jobs/exportFile';
 import { TYPE as FIND_FACE_NEIGHBORS_TYPE } from '../jobs/findFaceNeighbors';
 import { useJobContext } from './JobProvider';
 
@@ -36,6 +37,8 @@ function getJobTitle(type: string) {
   switch (type) {
     case FIND_FACE_NEIGHBORS_TYPE:
       return 'Calculate face neighbors';
+    case EXPORT_FILE_TYPE:
+      return 'Export file';
     default:
       return 'Unknown job';
   }

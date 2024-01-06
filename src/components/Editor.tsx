@@ -6,7 +6,6 @@ import * as THREE from 'three';
 
 import config from '../etc/config.json';
 import exportFileJob from '../jobs/exportFile';
-import { ChangedColor, ChangedColors } from '../utils/3mf/changeColors';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
 import changeVertexColor from '../utils/threejs/changeVertexColor';
 import getFace from '../utils/threejs/getFace';

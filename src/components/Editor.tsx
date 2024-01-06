@@ -18,7 +18,7 @@ import PermanentDrawer from './PermanentDrawer';
 import ThreeJsCanvas from './threeJs/Canvas';
 import useFile from './threeJs/useFile';
 
-type Settings = {
+export type Settings = {
   workingColor?: string;
   mode?: Mode;
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createHashRouter } from 'react-router-dom';
 
-import Editor from './components/Editor';
+import Editor, { Settings } from './components/Editor';
 import Home from './components/Home';
 
 const router = createHashRouter([
@@ -23,7 +23,16 @@ const router = createHashRouter([
     loader: () => {
       // Load settings from local storage
       if (localStorage) {
-        const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+        const settings: Settings = JSON.parse(
+          localStorage.getItem('settings') || '{}'
+        );
+
+        // Workaround: Vertex neighbors mode can not be used from the start, because
+        // neighbors for the model have to be loaded first.
+        if (settings.mode === 'vertex_neighbors') {
+          settings.mode = 'vertex';
+        }
+
         return settings;
       }
       return null;

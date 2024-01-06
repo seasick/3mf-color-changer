@@ -29,8 +29,8 @@ const router = createHashRouter([
 
         // Workaround: Vertex neighbors mode can not be used from the start, because
         // neighbors for the model have to be loaded first.
-        if (settings.mode === 'vertex_neighbors') {
-          settings.mode = 'vertex';
+        if (settings.mode === 'triangle_neighbors') {
+          settings.mode = 'triangle';
         }
 
         return settings;

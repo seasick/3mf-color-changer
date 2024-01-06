@@ -10,8 +10,8 @@ export default async function findFaceNeighbors(
     (async () => {
       // const start = Date.now();
 
-      // Find all neighbors for each vertex and store them in `userdata`.
-      // The index of the vertex is the faceId, and the value is an array of neighbors,
+      // Find all neighbors for each face and store them in `userdata`.
+      // The index of the face is the faceId, and the value is an array of neighbors,
       // defined by their faceId.
       const faces = [] as Neighbors;
       const positions = mesh.geometry.attributes.position;
@@ -60,7 +60,7 @@ async function getNeighborFaces(
       for (let i = minFaceId * 3; i < positions.count; i += 3) {
         const faceId = i / 3;
 
-        // Go through the edges of the vertex
+        // Go through the edges of the face
         for (let j = 0; j < 3; ++j) {
           const p0 = new THREE.Vector3().fromBufferAttribute(
             mesh.geometry.attributes.position,

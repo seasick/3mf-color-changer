@@ -14,10 +14,10 @@ import Tooltip from '@mui/material/Tooltip';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 
+import FaceNeighborsButton from './ModeSelector/FaceNeighborsButton';
 import UseNewModelButton from './ModeSelector/UseNewModelButton';
-import VertexNeighborsButton from './ModeSelector/VertexNeighborsButton';
 
-export type Mode = 'mesh' | 'vertex' | 'vertex_neighbors' | 'select_color';
+export type Mode = 'mesh' | 'triangle' | 'triangle_neighbors' | 'select_color';
 type Props = {
   color: string;
   mode: Mode;
@@ -88,19 +88,19 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Select the vertex painting tool" placement="right">
+      <Tooltip title="Select the triangle painting tool" placement="right">
         <IconButton
-          onClick={handleModeClick('vertex')}
-          sx={mode === 'vertex' ? selectedStyle : style}
+          onClick={handleModeClick('triangle')}
+          sx={mode === 'triangle' ? selectedStyle : style}
         >
           <CreateIcon />
         </IconButton>
       </Tooltip>
 
-      <VertexNeighborsButton
-        onClick={handleModeClick('vertex_neighbors')}
+      <FaceNeighborsButton
+        onClick={handleModeClick('triangle_neighbors')}
         buttonSx={{
-          ...(mode === 'vertex_neighbors' ? selectedStyle : style),
+          ...(mode === 'triangle_neighbors' ? selectedStyle : style),
         }}
       />
 
@@ -123,7 +123,7 @@ export default function ModeSelector({
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Select the color from a vertex" placement="right">
+      <Tooltip title="Select the color from a triangle" placement="right">
         <IconButton
           onClick={handleModeClick('select_color')}
           sx={mode === 'select_color' ? selectedStyle : style}

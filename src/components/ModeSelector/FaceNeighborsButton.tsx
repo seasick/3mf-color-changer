@@ -13,7 +13,7 @@ type Props = {
   buttonSx?: SxProps;
 };
 
-export default function VertexNeighborsButton({ onClick, buttonSx }: Props) {
+export default function FaceNeighborsButton({ onClick, buttonSx }: Props) {
   const [processing, setProcessing] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
 

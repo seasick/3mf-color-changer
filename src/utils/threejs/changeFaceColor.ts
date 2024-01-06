@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { getFaceCount } from './getFaceCount';
 
-export default function changeVertexColor(
+export default function changeFaceColor(
   mesh: THREE.Mesh,
   color: string,
   face: THREE.Face

@@ -6,10 +6,10 @@ import * as THREE from 'three';
 
 import config from '../etc/config.json';
 import exportFileJob from '../jobs/exportFile';
+import changeFaceColor from '../utils/threejs/changeFaceColor';
 import changeMeshColor from '../utils/threejs/changeMeshColor';
-import changeVertexColor from '../utils/threejs/changeVertexColor';
 import getFace from '../utils/threejs/getFace';
-import getVertexColor from '../utils/threejs/getVertexColor';
+import getFaceColor from '../utils/threejs/getFaceColor';
 import sameVector3 from '../utils/threejs/sameVector3';
 import { useJobContext } from './JobProvider';
 import MeshList from './MeshList';
@@ -60,12 +60,12 @@ export default function Editor({ onSettingsChange }: Props) {
   const handleSelect = (e: ThreeEvent<MouseEvent>) => {
     if (mode === 'mesh') {
       handleMeshColorChange(e.object.uuid, workingColor);
-    } else if (mode === 'vertex') {
-      handleVertexColorChange(e, workingColor);
-    } else if (mode === 'vertex_neighbors') {
-      handleVertexNeighborColorChange(e, workingColor);
+    } else if (mode === 'triangle') {
+      handleFaceColorChange(e, workingColor);
+    } else if (mode === 'triangle_neighbors') {
+      handleFaceNeighborColorChange(e, workingColor);
     } else if (mode === 'select_color' && e.face) {
-      setWorkingColor(getVertexColor(e.object as THREE.Mesh, e.face));
+      setWorkingColor(getFaceColor(e.object as THREE.Mesh, e.face));
     }
 
     setSelected(e.object);
@@ -86,17 +86,17 @@ export default function Editor({ onSettingsChange }: Props) {
     });
   };
 
-  const handleVertexColorChange = (e: ThreeEvent<MouseEvent>, color) => {
+  const handleFaceColorChange = (e: ThreeEvent<MouseEvent>, color) => {
     const mesh = e.object as THREE.Mesh;
 
     if (e.face) {
-      changeVertexColor(mesh, color, e.face);
+      changeFaceColor(mesh, color, e.face);
     }
   };
 
-  // This function will color a single vertex on a mesh, and will seek its
-  // neighbors which have the same orentation as the initial vertex
-  const handleVertexNeighborColorChange = async (
+  // This function will color a single face on a mesh, and will seek its
+  // neighbors which have the same orentation as the initial face
+  const handleFaceNeighborColorChange = async (
     e: ThreeEvent<MouseEvent>,
     color
   ) => {
@@ -105,8 +105,8 @@ export default function Editor({ onSettingsChange }: Props) {
     if (e.face) {
       const initialFace = getFace(mesh, e.faceIndex!);
 
-      // Change the color of the initial vertex
-      changeVertexColor(mesh, color, e.face);
+      // Change the color of the initial face
+      changeFaceColor(mesh, color, e.face);
 
       const visitedNeighbors: number[] = [];
       const walkNeighbors = (
@@ -124,7 +124,7 @@ export default function Editor({ onSettingsChange }: Props) {
           return;
         }
 
-        changeVertexColor(mesh, color, face);
+        changeFaceColor(mesh, color, face);
         mesh.userData.neighbors[neighborFaceIndex].forEach((neighbor) => {
           walkNeighbors(neighbor, expectedNormal);
         });
@@ -150,7 +150,7 @@ export default function Editor({ onSettingsChange }: Props) {
 
   const handlePointerOverModel = () => {
     if (editorRef.current) {
-      if (mode === 'vertex_neighbors') {
+      if (mode === 'triangle_neighbors') {
         // TODO Draw a circle around the mouse pointer to indicate brush radius
         editorRef.current.style.cursor = `crosshair`;
       } else {

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export default function getVertexColor(
+export default function getFaceColor(
   mesh: THREE.Mesh,
   face: THREE.Face
 ): string {

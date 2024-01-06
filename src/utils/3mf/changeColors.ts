@@ -8,25 +8,13 @@ import {
 } from '@zip.js/zip.js';
 
 import getFace from '../threejs/getFace';
-import getVertexColor from '../threejs/getVertexColor';
+import getFaceColor from '../threejs/getFaceColor';
 import { addColorGroup } from './addColorGroup';
 
-type Color = string;
 export type Face = {
   v1: THREE.Vector3;
   v2: THREE.Vector3;
   v3: THREE.Vector3;
-};
-export type ChangedColor = {
-  mesh: Color;
-  vertex?: {
-    faceIndex: number;
-    face: Face;
-    color: Color;
-  }[];
-};
-export type ChangedColors = {
-  [objectName: string]: ChangedColor;
 };
 
 /* Applies the color changes to a given 3MF file and returns the content blob of the new file */
@@ -99,7 +87,7 @@ export async function changeColors(
             const triangleIdx = findTriangleIndex(obj, face);
 
             // Find the color of the face
-            const color = getVertexColor(mesh, face);
+            const color = getFaceColor(mesh, face);
 
             // Add the color to the color group
             if (!colorGroup.includes(color)) {
@@ -220,7 +208,7 @@ function findTriangleIndex(mesh: Element, face: Face): number {
 
   if (!found) {
     throw new Error(
-      'Could not determine correct vertex for coloring during 3MF modification'
+      'Could not determine correct triangle for coloring during 3MF modification'
     );
   }
 

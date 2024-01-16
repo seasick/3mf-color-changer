@@ -29,7 +29,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
-    "@mui/icons-material": "^5.15.3",
+    "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@react-three/drei": "^9.93.0",
     "@react-three/fiber": "^8.15.14",

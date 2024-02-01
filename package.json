@@ -41,6 +41,6 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.21.3",
-    "three": "^0.160.1"
+    "three": "^0.161.0"
   }
 }

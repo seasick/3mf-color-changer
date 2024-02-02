@@ -31,7 +31,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
-    "@react-three/drei": "^9.93.0",
+    "@react-three/drei": "^9.97.0",
     "@react-three/fiber": "^8.15.15",
     "@types/three": "^0.160.0",
     "@zip.js/zip.js": "^2.7.33",
